@@ -68,11 +68,63 @@ get_last_timestamp() {
   echo "$last_ts"
 }
 
-# Decode project path from directory name
-# e.g., "-Users-dylanr-work-2389-boba" -> "/Users/dylanr/work/2389/boba"
+# Decode project path from directory name by reconstructing the real filesystem path.
+# The encoding replaces "/" with "-", but directory names can also contain "-",
+# so we resolve ambiguity by checking which paths actually exist on disk.
 decode_project_path() {
-  local dirname="$1"
-  echo "$dirname" | sed 's/^-/\//' | sed 's/-/\//g'
+  local encoded="$1"
+  # Strip leading dash to get "Users-dylanr-work-2389-boba"
+  local remaining="${encoded#-}"
+  local current="/"
+
+  while [[ -n "$remaining" ]]; do
+    # Try progressively longer segments to find the longest match on disk
+    local best_segment=""
+    local best_rest=""
+    local IFS='-'
+    local parts=($remaining)
+    unset IFS
+
+    local found=false
+    # Try from longest possible segment down to single part
+    for (( i=${#parts[@]}; i>=1; i-- )); do
+      local segment=""
+      for (( j=0; j<i; j++ )); do
+        if [[ -z "$segment" ]]; then
+          segment="${parts[$j]}"
+        else
+          segment="${segment}-${parts[$j]}"
+        fi
+      done
+
+      local candidate="${current%/}/${segment}"
+      if [[ -e "$candidate" ]]; then
+        best_segment="$segment"
+        # Rebuild remaining from parts[i:]
+        best_rest=""
+        for (( j=i; j<${#parts[@]}; j++ )); do
+          if [[ -z "$best_rest" ]]; then
+            best_rest="${parts[$j]}"
+          else
+            best_rest="${best_rest}-${parts[$j]}"
+          fi
+        done
+        found=true
+        break
+      fi
+    done
+
+    if [[ "$found" == true ]]; then
+      current="${current%/}/${best_segment}"
+      remaining="$best_rest"
+    else
+      # No filesystem match — use all remaining parts joined with hyphens as the final segment
+      current="${current%/}/${remaining}"
+      remaining=""
+    fi
+  done
+
+  echo "$current"
 }
 
 # Extract project name (last path component) from decoded path
