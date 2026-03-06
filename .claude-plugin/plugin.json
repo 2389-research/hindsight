@@ -1,0 +1,5 @@
+{
+  "name": "cc-review",
+  "description": "Analyze Claude Code session logs through configurable lenses to produce summary reports",
+  "version": "1.0.0"
+}
