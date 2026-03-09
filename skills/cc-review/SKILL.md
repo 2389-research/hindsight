@@ -34,10 +34,12 @@ User directories must exist at `~/.claude/cc-review/`. If they don't, run the in
 script first:
 
 ```bash
-bash <plugin-base-dir>/scripts/install.sh
+bash <plugin-root>/scripts/install.sh
 ```
 
-Where `<plugin-base-dir>` is the base directory shown in the skill loading message above.
+Where `<plugin-root>` is determined by taking the skill base directory shown in the loading
+message above and going up two levels (e.g., if skill base is `.../1.0.0/skills/cc-review`,
+then plugin root is `.../1.0.0`).
 
 ## Pipeline
 
@@ -65,7 +67,7 @@ Follow these phases in order. Do not skip phases.
 Run the collect-sessions script to get the manifest:
 
 ```bash
-bash <plugin-base-dir>/scripts/collect-sessions.sh <start-date> <end-date>
+bash <plugin-root>/scripts/collect-sessions.sh <start-date> <end-date>
 ```
 
 Parse the JSON output. If the manifest is empty (`[]`), report "No sessions found
@@ -86,8 +88,8 @@ For each session in the manifest, dispatch a subagent using the Agent tool to pr
 **Constructing the subagent prompt:**
 
 For each session, construct the subagent prompt by combining:
-1. The extraction prompt from `<plugin-base-dir>/skills/shared/extraction-prompt.md` (read it once and reuse)
-2. The session summary schema from `<plugin-base-dir>/skills/shared/session-summary-schema.md` (read it once and reuse)
+1. The extraction prompt from `<plugin-root>/skills/shared/extraction-prompt.md` (read it once and reuse)
+2. The session summary schema from `<plugin-root>/skills/shared/session-summary-schema.md` (read it once and reuse)
 3. If the lens has extraction hints, replace `{LENS_EXTRACTION_HINTS}` in the extraction prompt with those hints. If no hints, replace with empty string.
 4. The specific session metadata from the manifest entry (path, project, sessionId, etc.)
 

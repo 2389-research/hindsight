@@ -1,0 +1,10 @@
+{
+  "name": "cc-review-dev",
+  "owner": { "name": "dylanr" },
+  "plugins": [
+    {
+      "name": "cc-review",
+      "source": "./"
+    }
+  ]
+}
