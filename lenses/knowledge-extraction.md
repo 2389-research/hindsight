@@ -4,6 +4,7 @@
 ---
 name: knowledge-extraction
 description: Extract reusable learnings, patterns, and skill candidates
+version: 1
 ---
 
 # Analysis Instructions

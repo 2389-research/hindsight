@@ -4,6 +4,7 @@
 ---
 name: workflow-optimization
 description: Identify time sinks, inefficient patterns, and optimization opportunities
+version: 1
 ---
 
 # Analysis Instructions

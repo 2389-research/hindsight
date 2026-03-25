@@ -4,6 +4,7 @@
 ---
 name: standup
 description: Daily standup summary — what was done, what's next, blockers
+version: 1
 ---
 
 # Analysis Instructions
