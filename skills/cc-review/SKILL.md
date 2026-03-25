@@ -29,16 +29,23 @@ Structured formats like `yesterday standup` still work — the skill handles bot
 
 ## Prerequisites
 
-User directories must exist at `~/.claude/cc-review/`. If they don't, run the install
-script first:
+1. **ccvault** must be installed and synced. Verify by running:
+   ```bash
+   ccvault orient --json 2>/dev/null | head -1
+   ```
+   If this fails, tell the user to install ccvault (`brew install 2389-research/tap/ccvault`)
+   and run `ccvault sync` first.
 
-```bash
-bash <plugin-root>/scripts/install.sh
-```
+2. **ccvault MCP server** must be available. The skill uses ccvault's MCP tools
+   (`search_conversations`, `get_session_summary`, `get_turns`, `list_sessions`)
+   to read session data. If MCP tools are not available, fall back to the ccvault CLI.
 
-Where `<plugin-root>` is determined by taking the skill base directory shown in the loading
-message above and going up two levels (e.g., if skill base is `.../1.0.0/skills/cc-review`,
-then plugin root is `.../1.0.0`).
+3. **User directories** must exist at `~/.claude/cc-review/`. If they don't, run:
+   ```bash
+   bash <plugin-root>/scripts/install.sh
+   ```
+   Where `<plugin-root>` is determined by taking the skill base directory shown in the
+   loading message above and going up two levels.
 
 ## Pipeline
 
@@ -77,14 +84,18 @@ If the lenses directory doesn't exist, tell the user to run the install script a
 
 ### Phase 1: Collect Sessions
 
-Run the collect-sessions script to get the manifest:
+Use ccvault to find sessions in the date range. Try the MCP tool first, fall back to CLI:
 
+**Via MCP (preferred):**
+Call `list_sessions` and filter results by date range. If a project filter is relevant
+(from the user's input), include it.
+
+**Via CLI (fallback):**
 ```bash
-bash <plugin-root>/scripts/collect-sessions.sh <start-date> <end-date>
+ccvault list-sessions --after <start-date> --before <end-date> --json
 ```
 
-Parse the JSON output. If the manifest is empty (`[]`), report "No sessions found
-for the specified date range" and stop.
+If no sessions are found, report "No sessions found for the specified date range" and stop.
 
 Report to the user: "Found N sessions across M projects for <date-range>."
 
@@ -96,20 +107,18 @@ Report to the user: "Found N sessions across M projects for <date-range>."
 
 ### Phase 3: Extract Session Summaries (Parallel Subagents)
 
-For each session in the manifest, dispatch a subagent using the Agent tool to extract
-a summary and write it to a file. This keeps subagent context (which can be enormous
-for large session logs) out of the main conversation.
+For each session, dispatch a subagent to produce a summary using ccvault's MCP tools.
+This keeps subagent context out of the main conversation.
 
 **Cache check:**
 
 Before extracting, check if summaries already exist at
-`~/.claude/cc-review/reports/<date-range>/summaries/`. For each session in the manifest,
+`~/.claude/cc-review/reports/<date-range>/summaries/`. For each session in the list,
 check if `<sessionId>.md` exists in that directory. If ALL sessions have existing
 summaries, skip extraction entirely and report:
 "Found cached summaries for N sessions. Skipping extraction."
 
-If SOME sessions have summaries but others don't (e.g., new sessions appeared since
-last run), extract only the missing ones and report:
+If SOME sessions have summaries but others don't, extract only the missing ones and report:
 "Found cached summaries for X/N sessions. Extracting Y remaining..."
 
 **Setup:**
@@ -129,20 +138,31 @@ For each session, construct the subagent prompt by combining:
 1. The extraction prompt from `<plugin-root>/skills/shared/extraction-prompt.md` (read it once and reuse)
 2. The session summary schema from `<plugin-root>/skills/shared/session-summary-schema.md` (read it once and reuse)
 3. If the lens has extraction hints, replace `{LENS_EXTRACTION_HINTS}` in the extraction prompt with those hints. If no hints, replace with empty string.
-4. The specific session metadata from the manifest entry (path, project, sessionId, etc.)
+4. The session ID, project name, and project path from the session list
 5. The output file path where the subagent should write its summary
 
 The subagent prompt should be structured as:
 
 ```
-You are a session extraction agent. Your job is to read a Claude Code session log
-and produce a standardized summary.
+You are a session extraction agent. Your job is to read a Claude Code session
+via ccvault's MCP tools and produce a standardized summary.
 
 ## Your Task
 
-Read the session log at: {session_path}
-This session is from project: {project} ({projectPath})
-Session ID: {sessionId}
+Analyze session: {sessionId}
+Project: {project} ({projectPath})
+
+## How to Read the Session
+
+Use ccvault's MCP tools to access session data. Follow this sequence:
+
+1. Call `get_session_summary` with session_id to get metadata, turn counts,
+   token usage, tools used, and first/last messages.
+2. Call `get_turns` with session_id, paginating through all turns (limit=50,
+   increment offset). Use type="user" first to understand what the human asked,
+   then type="assistant" to see responses and tool usage.
+3. For long sessions (100+ turns), focus on user turns to understand the arc,
+   then sample assistant turns at key decision points rather than reading every turn.
 
 ## Instructions
 

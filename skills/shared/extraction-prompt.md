@@ -1,34 +1,40 @@
 <!-- ABOUTME: Prompt template given to per-session extraction subagents. -->
-<!-- ABOUTME: Instructs how to read JSONL session logs and produce standardized summaries. -->
+<!-- ABOUTME: Instructs how to read session data via ccvault MCP tools and produce standardized summaries. -->
 
 # Session Extraction Prompt
 
-You are analyzing a single Claude Code session log (JSONL file) to produce a
-standardized summary. Read the entire session file and produce a summary following
+You are analyzing a single Claude Code session to produce a standardized summary.
+Use ccvault's MCP tools to access the session data, then produce a summary following
 the Session Summary Schema.
 
 ## How to Read the Session
 
-The file is JSONL — one JSON object per line. Key entry types:
+Use ccvault's MCP tools in this order:
 
-- **`user` entries with string `message.content`**: Human messages (what the user said/asked)
-- **`user` entries with array `message.content`**: Tool results (output from tools Claude called)
-- **`assistant` entries**: Claude's responses, containing:
-  - `{"type": "text", "text": "..."}` — response text
-  - `{"type": "tool_use", "name": "...", "input": {...}}` — tool calls
-  - `{"type": "thinking", "thinking": "..."}` — internal reasoning (skim for decision context)
-- **`system` entries**: Metadata — look for `slug` (session name) and `durationMs` (turn timing)
-- **`progress` entries**: Subagent dispatches and hook events (skim for context)
-- **`file-history-snapshot` entries**: File change tracking (skip unless relevant)
+1. **`get_session_summary`** — Start here. Returns metadata (project, model, dates,
+   git branch), turn counts by type, token usage, top 10 tools used, and first/last
+   user messages (500 chars each). This gives you the skeleton of the summary.
+
+2. **`get_turns`** — Paginate through session content. Each turn is truncated to
+   1000 chars. Key parameters:
+   - `type: "user"` — human messages only (understand what was asked/directed)
+   - `type: "assistant"` — Claude's responses and tool calls
+   - `limit: 50`, incrementing `offset` to paginate
+   - Check `has_more` to know when to stop
+
+3. **`search_conversations`** — Use targeted searches within the session's project
+   to find specific content (error messages, decisions, key phrases).
 
 ## Reading Strategy
 
-1. Read the JSONL file using the Read tool
-2. Focus on `user` (string content) and `assistant` (text content) entries to understand the conversation
-3. Scan `tool_use` entries to understand what actions were taken
-4. Check `system` entries for the session slug and timing data
-5. Aggregate `usage` fields from assistant entries for token totals
-6. Count human turns (user entries with string content) and assistant turns
+1. Call `get_session_summary` to get the full metadata picture
+2. Page through `get_turns` with `type: "user"` to understand the conversation arc
+3. Page through `get_turns` with `type: "assistant"` to capture decisions, tool usage,
+   and key responses
+4. For long sessions (100+ turns), focus on user turns for the narrative arc, then
+   sample assistant turns at key decision points rather than reading every turn
+5. Use the metadata (tools used, turn counts, token usage) to fill in the quantitative
+   sections of the summary
 
 ## Output Format
 
