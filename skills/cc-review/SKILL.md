@@ -4,29 +4,28 @@
 ---
 name: cc-review
 description: Analyze Claude Code session logs through configurable lenses. Use when asked to review, summarize, or analyze session history.
-args: date-range [lens-name]
+args: freeform natural language (or structured date + lens)
 ---
 
 # CC Review — Session Log Analyzer
 
-## Arguments
+## Input
 
-This skill accepts arguments in the format: `<date-range> [lens-name]`
+This skill accepts freeform natural language describing what the user wants to analyze.
+The LLM interprets the input to determine two things:
 
-**Date range formats:**
-- `today`, `yesterday`
-- `last-week` (7 days), `last-month` (30 days)
-- `last-N-days` (e.g., `last-3-days`)
-- `YYYY-MM-DD` (single day)
-- `YYYY-MM-DD:YYYY-MM-DD` (explicit range)
+1. **Date range** — when to look
+2. **Lens** — what kind of analysis to produce
 
-**Lens name:** Name of a lens file (without `.md`). Default: `standup`.
+**Examples of valid input:**
+- `yesterday standup`
+- `what knowledge can we extract from last week's sessions?`
+- `summarize what happened today`
+- `review the last 3 days for workflow optimization opportunities`
+- `2026-03-01:2026-03-05 knowledge-extraction`
+- `what did I work on this past week?`
 
-**Examples:**
-- `/cc-review today standup`
-- `/cc-review last-week knowledge-extraction`
-- `/cc-review 2026-03-01:2026-03-05 workflow-optimization`
-- `/cc-review yesterday` (uses default lens)
+Structured formats like `yesterday standup` still work — the skill handles both.
 
 ## Prerequisites
 
@@ -45,22 +44,36 @@ then plugin root is `.../1.0.0`).
 
 Follow these phases in order. Do not skip phases.
 
-### Phase 0: Parse Arguments and Validate
+### Phase 0: Interpret Input and Validate
 
-1. Parse the arguments string to extract date-range and lens-name
-2. Resolve the date range to start and end dates (YYYY-MM-DD format). Use the Bash tool with `date` command for date math:
-   - `today` → today's date for both start and end
-   - `yesterday` → yesterday's date for both
-   - `last-week` → 7 days ago through today
-   - `last-month` → 30 days ago through today
-   - `last-N-days` → N days ago through today
-   - `YYYY-MM-DD` → that date for both start and end
-   - `YYYY-MM-DD:YYYY-MM-DD` → start and end as given
-3. If no lens specified, use `standup` as default
-4. Verify `~/.claude/cc-review/lenses/` exists
-   - If not found, tell the user to run the install script and stop
-5. Verify the lens file exists at `~/.claude/cc-review/lenses/<lens-name>.md`
-   - If not found, list available lenses and stop
+**Step 1: Determine date range**
+
+Interpret the user's input to extract a date range. Resolve to start and end dates
+(YYYY-MM-DD format). Use the Bash tool with `date` command for date math.
+
+Common patterns:
+- "today" / "yesterday" / "last week" / "last month" / "last N days"
+- "this past week" / "since Monday" / "March 1st through 5th"
+- Explicit formats like `2026-03-23` or `2026-03-01:2026-03-05`
+
+If the date range is ambiguous, ask the user to clarify.
+
+**Step 2: Determine lens**
+
+Read the available lenses from `~/.claude/cc-review/lenses/` (list the directory).
+Match the user's intent to the best available lens:
+
+- Explicit lens name (exact or partial match): `knowledge` → `knowledge-extraction`
+- Intent-based matching: "what did I learn" → `knowledge-extraction`, "standup summary" → `standup`, "improve my workflow" → `workflow-optimization`
+- If no lens intent is expressed, default to `standup`
+- If the intent doesn't clearly match any available lens, list the options and ask
+
+**Step 3: Confirm interpretation**
+
+Before proceeding, briefly state what you understood:
+"Analyzing <date-range> with the <lens-name> lens."
+
+If the lenses directory doesn't exist, tell the user to run the install script and stop.
 
 ### Phase 1: Collect Sessions
 
@@ -83,7 +96,32 @@ Report to the user: "Found N sessions across M projects for <date-range>."
 
 ### Phase 3: Extract Session Summaries (Parallel Subagents)
 
-For each session in the manifest, dispatch a subagent using the Agent tool to produce a session summary.
+For each session in the manifest, dispatch a subagent using the Agent tool to extract
+a summary and write it to a file. This keeps subagent context (which can be enormous
+for large session logs) out of the main conversation.
+
+**Cache check:**
+
+Before extracting, check if summaries already exist at
+`~/.claude/cc-review/reports/<date-range>/summaries/`. For each session in the manifest,
+check if `<sessionId>.md` exists in that directory. If ALL sessions have existing
+summaries, skip extraction entirely and report:
+"Found cached summaries for N sessions. Skipping extraction."
+
+If SOME sessions have summaries but others don't (e.g., new sessions appeared since
+last run), extract only the missing ones and report:
+"Found cached summaries for X/N sessions. Extracting Y remaining..."
+
+**Setup:**
+
+Before dispatching subagents, create the summaries staging directory:
+
+```bash
+mkdir -p ~/.claude/cc-review/reports/<date-range>/summaries
+```
+
+Where `<date-range>` follows the same format as the report output path (e.g., `2026-03-23`
+for a single day, `2026-03-20_to_2026-03-23` for a range).
 
 **Constructing the subagent prompt:**
 
@@ -92,6 +130,7 @@ For each session, construct the subagent prompt by combining:
 2. The session summary schema from `<plugin-root>/skills/shared/session-summary-schema.md` (read it once and reuse)
 3. If the lens has extraction hints, replace `{LENS_EXTRACTION_HINTS}` in the extraction prompt with those hints. If no hints, replace with empty string.
 4. The specific session metadata from the manifest entry (path, project, sessionId, etc.)
+5. The output file path where the subagent should write its summary
 
 The subagent prompt should be structured as:
 
@@ -115,7 +154,11 @@ Session ID: {sessionId}
 
 ## Output
 
-Produce ONLY the session summary markdown. No preamble, no commentary.
+Write your session summary markdown to this file using the Write tool:
+{summaries_dir}/{sessionId}.md
+
+Write ONLY the session summary markdown to the file. No preamble, no commentary.
+After writing, respond with just the file path to confirm completion.
 ```
 
 **Batching:**
@@ -129,11 +172,11 @@ Produce ONLY the session summary markdown. No preamble, no commentary.
 
 ### Phase 4: Cross-Cutting Analysis
 
-Once all session summaries are collected:
+Once all session summaries have been written to disk:
 
 1. Read the full lens file from `~/.claude/cc-review/lenses/<lens-name>.md`
 2. Extract the `# Analysis Instructions` section (everything between `# Analysis Instructions` and `## Extraction Hints`, or end of file if no extraction hints)
-3. Combine ALL session summaries into your context
+3. Read ALL session summary files from `~/.claude/cc-review/reports/<date-range>/summaries/`
 4. Apply the lens analysis instructions to produce the final report
 5. The report should follow the format specified in the lens
 

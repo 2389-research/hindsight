@@ -1,5 +1,5 @@
-<!-- ABOUTME: Lens for extracting reusable learnings, patterns, and skill candidates. -->
-<!-- ABOUTME: Identifies automation opportunities and process insights. -->
+<!-- ABOUTME: Lens for extracting reusable learnings, patterns, and skill evolution opportunities. -->
+<!-- ABOUTME: Identifies both new skill candidates and refinements to existing skills. -->
 
 ---
 name: knowledge-extraction
@@ -23,8 +23,18 @@ reused across projects and sessions.
 - Patterns that worked well (candidates for reuse)
 - Anti-patterns discovered (things to avoid)
 
-### Skill Candidates
-For each candidate:
+### Skill Evolution
+
+#### Existing Skill Refinements
+For skills that were used during the sessions but showed friction, gaps, or missed potential:
+- **Skill name:** Which skill
+- **What worked:** What the skill did well
+- **What fell short:** Specific friction points, gaps, or missed edge cases observed
+- **Suggested change:** Concrete improvement (new section, updated flowchart, additional triggers, etc.)
+- **Evidence:** Which sessions revealed this
+
+#### New Skill Candidates
+For workflows or patterns that don't have a skill yet but should:
 - **What it would do:** Brief description
 - **Evidence:** Which sessions showed the need
 - **Estimated value:** How often would this save time?
@@ -47,3 +57,6 @@ When summarizing each session, also capture:
 - Novel combinations of tools or skills
 - Debugging strategies that proved effective
 - Code patterns that were written from scratch but exist in libraries
+- Skills that were invoked but caused friction, required workarounds, or missed edge cases
+- Workflows where a skill should have been used but wasn't (missed triggers)
+- User corrections that suggest a skill's guidance is incomplete or wrong
