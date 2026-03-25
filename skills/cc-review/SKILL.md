@@ -104,6 +104,7 @@ Report to the user: "Found N sessions across M projects for <date-range>."
 1. Read the lens file from `~/.claude/cc-review/lenses/<lens-name>.md`
 2. Check if it has an `## Extraction Hints` section
 3. If it does, extract the text of that section — it will be appended to the extraction prompt
+4. Extract the `version` field from the lens frontmatter. If not present, default to `1`
 
 ### Phase 3: Extract Session Summaries (Parallel Subagents)
 
@@ -206,6 +207,7 @@ Once all session summaries have been written to disk:
    - For single dates or named ranges resolving to a single day: `~/.claude/cc-review/reports/YYYY-MM-DD/<lens-name>.md`
    - For multi-day ranges: `~/.claude/cc-review/reports/YYYY-MM-DD_to_YYYY-MM-DD/<lens-name>.md`
 2. Create the directory if needed using `mkdir -p`
-3. Write the report file using the Write tool
+3. Write the report file using the Write tool. Include a version line after the report title:
+   `*Generated with <lens-name> lens v<version>*`
 4. Report to the user: "Report written to <path>"
 5. Display the full report to the user
