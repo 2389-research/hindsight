@@ -42,6 +42,22 @@ Produce the summary as markdown following the Session Summary Schema exactly.
 Use the schema's section headers and include all required sections.
 Scale the "What Happened" narrative to the session's complexity.
 
+## Metadata Extraction Tips
+
+- **Session Slug**: Look for the human-readable session name in system entries or
+  the first user message. If `get_session_summary` returns a slug field, use it.
+  Otherwise, leave blank rather than fabricating one.
+- **Duration**: Compute from the start and end timestamps returned by
+  `get_session_summary`. Format as HH:MM wall clock time.
+- **Project Description**: Write a one-line description of what this project is,
+  inferred from the session content (e.g., "Android email client" or
+  "automotive parts catalog"). This helps report readers who aren't familiar
+  with the project name.
+- **PR URLs**: When the session creates or references a PR, capture the full URL
+  (e.g., from `gh pr create` output or browser links in messages), not just the
+  PR number. If only a number is available, include the repo context so the
+  aggregation agent can construct a link.
+
 ## Important
 
 - Be factual — report what happened, don't editorialize

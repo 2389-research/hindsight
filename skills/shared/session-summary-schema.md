@@ -18,6 +18,7 @@ All sections are required unless marked optional.
 | Session ID | UUID from the JSONL filename |
 | Session Slug | Human-readable name from system entries (if available) |
 | Project | Project name |
+| Project Description | One-line description of what this project is, inferred from session content |
 | Project Path | Absolute filesystem path |
 | Branch | Git branch during the session |
 | Date | Start timestamp → End timestamp |
@@ -42,7 +43,7 @@ Bulleted list of concrete accomplishments:
 - Bugs fixed
 - Files created or significantly modified
 - Decisions made
-- PRs created, commits made
+- PRs created (include full URL if available, not just number), commits made
 
 ### Tools & Patterns (Required)
 

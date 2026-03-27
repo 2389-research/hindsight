@@ -208,6 +208,26 @@ Once all session summaries have been written to disk:
 4. Apply the lens analysis instructions to produce the final report
 5. The report should follow the format specified in the lens
 
+**Aggregation compliance rules:**
+
+These rules apply when producing the final report. They override any conflicting
+instinct to be helpful or thorough:
+
+- **Only include work from the requested date range.** Do not attribute work from
+  other dates. If a summary's date falls outside the range, exclude it entirely.
+- **Follow the lens heading hierarchy exactly.** Use the heading levels specified
+  in the lens format section. Do not promote or demote headings.
+- **Follow lens content principles literally.** If the lens says "prefer outcomes
+  over implementation detail," do not include implementation detail. If it says
+  "no ideation," exclude brainstorming. Re-read the principles before writing
+  each section.
+- **Do not fabricate.** Every claim in the report must trace to a specific session
+  summary. If no summary mentions a blocker, do not invent one. If no summary
+  mentions a PR, do not reference one.
+- **Use project descriptions from summaries.** When a session summary includes a
+  Project Description, use it to give readers context on first mention of that
+  project in the report.
+
 ### Phase 5: Write Report
 
 1. Determine the output path:

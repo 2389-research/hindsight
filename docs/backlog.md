@@ -18,33 +18,26 @@ playbook effectively (cost ladder, query operators, pagination patterns).
 ~~Add a subskill to cc-review that guides writing new lenses.~~ **Done** — implemented
 as `skills/lens-writing/SKILL.md` with create/evaluate modes and persona-based panels.
 
-## Upstream: session slugs in extraction pipeline
-Session slugs are not surfaced from extraction through to aggregation. The standup lens
-spec requires session slug references in "In Progress" and the old "Knowledge Share"
-sections, but the extraction prompt and base schema don't capture or pass session
-identifiers in a way the aggregation agent can reference. Surfaced by 3/6 panel judges.
+## ~~Upstream: session slugs in extraction pipeline~~
+~~Session slugs are not surfaced from extraction through to aggregation.~~ **Done** —
+added extraction prompt guidance for finding slugs in session data.
 
-## Upstream: project descriptions in base schema
-The base schema captures project name and path but not a human-readable description
-of what the project is. Every lens that groups by project suffers from this — readers
-who don't know the projects can't understand the report. Surfaced by 3/6 panel judges.
+## ~~Upstream: project descriptions in base schema~~
+~~The base schema captures project name and path but not a human-readable description.~~
+**Done** — added Project Description field to schema, extraction prompt infers it from
+session content.
 
-## Upstream: PR URLs in extraction
-The extraction prompt captures PR numbers but not full URLs. Reports mention "PR #69"
-but can't link to it. Surfaced by 4/6 panel judges.
+## ~~Upstream: PR URLs in extraction~~
+~~The extraction prompt captures PR numbers but not full URLs.~~ **Done** — schema and
+extraction prompt now request full PR URLs.
 
-## Upstream: session duration and time allocation
-The base schema doesn't capture session duration or time-per-project. Multiple personas
-(EM, Friday Reviewer, Morning Scanner) want to know how effort was distributed across
-projects. Surfaced by 4/6 panel judges.
+## ~~Upstream: session duration and time allocation~~
+~~Duration not captured.~~ **Partially done** — duration was already in the schema;
+added extraction prompt guidance for computing it from timestamps. Time-per-project
+allocation across sessions remains unsolved (would need multi-session correlation).
 
-## Aggregation compliance: LLM instruction following
-The aggregation agent doesn't fully comply with lens instructions. Observed issues:
-- Content principles partially ignored (e.g., "deleted 8,888 lines" is the exact
-  anti-pattern the lens v2 calls out, but it appeared in the v2 output anyway)
-- Heading hierarchy broken (sections and project sub-headings both at ### level)
-- Date misattribution (work from other dates included in single-day report)
-- Project naming inconsistency (instapost vs postkeeper without explanation)
-- Fabricated claims (blocker not traceable to any session summary)
-May need stronger instruction language, explicit counter-examples, or a post-generation
-validation step.
+## ~~Aggregation compliance: LLM instruction following~~
+~~The aggregation agent doesn't fully comply with lens instructions.~~ **Addressed** —
+added explicit aggregation compliance rules to Phase 4 of the cc-review skill covering
+date range enforcement, heading hierarchy, content principles, fabrication prevention,
+and project description usage. Needs re-evaluation to confirm improvement.
