@@ -42,9 +42,20 @@ it belongs to before making changes:
 - "Summaries don't capture security signals" → Layer 3 (extraction hints)
 - "Metadata table is inconsistent" → Layer 1 (upstream, flag don't fix)
 
-## Lens File Format
+## Lens Locations
 
-Lenses live in `~/.claude/cc-review/lenses/<name>.md`:
+Lenses can live in two places:
+
+- **User lenses** (`~/.claude/cc-review/lenses/<name>.md`): global lenses available
+  across all projects. Built-in lenses ship here on install.
+- **Project lenses** (`<project-root>/.claude/cc-review/lenses/<name>.md`): scoped
+  to a specific codebase, checked into the repo.
+
+When listing available lenses, check both locations. Project lenses take precedence
+if a name collision occurs. Revisions always write in place — wherever the lens
+currently lives.
+
+## Lens File Format
 
 ~~~markdown
 <!-- ABOUTME: One-line description of what this lens does. -->
@@ -86,9 +97,9 @@ Clarify the lens purpose through conversation. Ask one question at a time:
 2. **Who reads the output?** (the developer themselves, a manager, an auditor,
    a future onboarding engineer)
 3. **What scope?** Per-session signals vs cross-session patterns vs both?
-4. **What existing lens is closest?** Read available lenses from
-   `~/.claude/cc-review/lenses/` and check if one already covers this need
-   or could be extended.
+4. **What existing lens is closest?** Read available lenses from both
+   `~/.claude/cc-review/lenses/` and `<project-root>/.claude/cc-review/lenses/`
+   and check if one already covers this need or could be extended.
 
 Use AskUserQuestion with multiple choice where possible.
 
@@ -103,7 +114,11 @@ Before writing:
 - If the lens only needs to reorganize/filter existing schema data, Extraction Hints
   may be unnecessary
 
-Write to: `~/.claude/cc-review/lenses/<name>.md`
+Ask the user where to write the lens via AskUserQuestion:
+- **User lens** (`~/.claude/cc-review/lenses/`): available across all projects
+- **Project lens** (`<project-root>/.claude/cc-review/lenses/`): scoped to this repo
+
+Write to the chosen location.
 
 ### Step 3: RED — Run and Evaluate
 

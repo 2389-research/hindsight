@@ -67,7 +67,12 @@ If the date range is ambiguous, ask the user to clarify.
 
 **Step 2: Determine lens**
 
-Read the available lenses from `~/.claude/cc-review/lenses/` (list the directory).
+Read the available lenses from both locations (list both directories):
+- `~/.claude/cc-review/lenses/` (user/built-in lenses)
+- `<project-root>/.claude/cc-review/lenses/` (project-scoped lenses)
+
+Project lenses take precedence if a name collision occurs.
+
 Match the user's intent to the best available lens:
 
 - Explicit lens name (exact or partial match): `knowledge` → `knowledge-extraction`
@@ -80,7 +85,7 @@ Match the user's intent to the best available lens:
 Before proceeding, briefly state what you understood:
 "Analyzing <date-range> with the <lens-name> lens."
 
-If the lenses directory doesn't exist, tell the user to run the install script and stop.
+If neither lenses directory exists, tell the user to run the install script and stop.
 
 ### Phase 1: Collect Sessions
 
@@ -101,7 +106,9 @@ Report to the user: "Found N sessions across M projects for <date-range>."
 
 ### Phase 2: Load Lens
 
-1. Read the lens file from `~/.claude/cc-review/lenses/<lens-name>.md`
+1. Read the lens file from its resolved location (check project lenses first,
+   then user lenses: `<project-root>/.claude/cc-review/lenses/<lens-name>.md`,
+   falling back to `~/.claude/cc-review/lenses/<lens-name>.md`)
 2. Check if it has an `## Extraction Hints` section
 3. If it does, extract the text of that section — it will be appended to the extraction prompt
 4. Extract the `version` field from the lens frontmatter. If not present, default to `1`
@@ -195,7 +202,7 @@ After writing, respond with just the file path to confirm completion.
 
 Once all session summaries have been written to disk:
 
-1. Read the full lens file from `~/.claude/cc-review/lenses/<lens-name>.md`
+1. Read the full lens file from its resolved location (same precedence as Phase 2)
 2. Extract the `# Analysis Instructions` section (everything between `# Analysis Instructions` and `## Extraction Hints`, or end of file if no extraction hints)
 3. Read ALL session summary files from `~/.claude/cc-review/reports/<date-range>/summaries/`
 4. Apply the lens analysis instructions to produce the final report
