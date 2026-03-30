@@ -147,7 +147,8 @@ For each session, construct the subagent prompt by combining:
 2. The session summary schema from `<plugin-root>/skills/shared/session-summary-schema.md` (read it once and reuse)
 3. If the lens has extraction hints, replace `{LENS_EXTRACTION_HINTS}` in the extraction prompt with those hints. If no hints, replace with empty string.
 4. The session ID, project name, and project path from the session list
-5. The output file path where the subagent should write its summary
+5. The **date range** being analyzed
+6. The output file path where the subagent should write its summary
 
 The subagent prompt should be structured as:
 
@@ -159,6 +160,14 @@ via ccvault's MCP tools and produce a standardized summary.
 
 Analyze session: {sessionId}
 Project: {project} ({projectPath})
+Date range: {startDate} to {endDate}
+
+**IMPORTANT: Only summarize activity that occurred within the date range above.**
+This session may span a longer period, but your summary must only cover what
+happened between {startDate} and {endDate}. Use turn timestamps to determine
+which activity falls within the window. If no activity occurred in this window,
+write a summary with just the Metadata section and note "No activity in date range"
+in the What Happened section.
 
 ## How to Read the Session
 
@@ -171,6 +180,9 @@ Use ccvault's MCP tools to access session data. Follow this sequence:
    then type="assistant" to see responses and tool usage.
 3. For long sessions (100+ turns), focus on user turns to understand the arc,
    then sample assistant turns at key decision points rather than reading every turn.
+4. **Filter by date range.** Each turn has a timestamp. Skip turns outside the
+   requested date range. Only include activities, decisions, and outcomes from
+   turns within the window.
 
 ## Instructions
 
@@ -210,23 +222,13 @@ Once all session summaries have been written to disk:
 
 **Aggregation compliance rules:**
 
-These rules apply when producing the final report. They override any conflicting
-instinct to be helpful or thorough:
-
-- **Only include work from the requested date range.** Do not attribute work from
-  other dates. If a summary's date falls outside the range, exclude it entirely.
-- **Follow the lens heading hierarchy exactly.** Use the heading levels specified
-  in the lens format section. Do not promote or demote headings.
-- **Follow lens content principles literally.** If the lens says "prefer outcomes
-  over implementation detail," do not include implementation detail. If it says
-  "no ideation," exclude brainstorming. Re-read the principles before writing
-  each section.
-- **Do not fabricate.** Every claim in the report must trace to a specific session
-  summary. If no summary mentions a blocker, do not invent one. If no summary
-  mentions a PR, do not reference one.
-- **Use project descriptions from summaries.** When a session summary includes a
-  Project Description, use it to give readers context on first mention of that
-  project in the report.
+- **Date range is a hard filter.** Do not attribute work from other dates. If
+  a summary covers a wider range than requested, only include activity that
+  can be specifically tied to the requested dates.
+- **Do not fabricate.** Every claim must trace to a session summary. Do not
+  invent next steps, blockers, or context that does not appear in any summary.
+- **Omit rather than pad.** If a project has no specific activity for the date
+  range, leave it out entirely — do not write "continued development" filler.
 
 ### Phase 5: Write Report
 

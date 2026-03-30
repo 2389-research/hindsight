@@ -61,8 +61,14 @@ Scale the "What Happened" narrative to the session's complexity.
 ## Important
 
 - Be factual — report what happened, don't editorialize
+- Use precise language, not subjective characterizations from the session. If
+  the session says "pixel-perfect match" but also notes a cosmetic difference,
+  report both facts rather than repeating the characterization uncaveated.
 - Include specific file paths, function names, and error messages
 - Capture the WHY behind decisions, not just the WHAT
+- If the session creates or references a git repository, capture the org/repo
+  path (e.g., `2389-research/jeff`, `detour1999/postkeeper`) so downstream
+  reports can link to it.
 - If the session was exploratory or brainstorming, capture the ideas discussed
 - If the session ended mid-task, note what was left incomplete
 

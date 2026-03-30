@@ -4,38 +4,36 @@
 ---
 name: workflow-optimization
 description: Identify time sinks, inefficient patterns, and optimization opportunities
-version: 1
+version: 2
 ---
 
 # Analysis Instructions
 
-Analyze session summaries to identify workflow inefficiencies and optimization opportunities.
-Focus on patterns across sessions, not individual incidents.
+Identify workflow inefficiencies and optimization opportunities. Focus on
+patterns across sessions, not individual incidents.
+Use `##` for sections, `###` for sub-groupings.
 
-## Format
-
-### Time Distribution
+## Time Distribution
 - How time was split across projects
 - Longest sessions and what drove their length
-- Sessions with high turn counts relative to output (potential inefficiency)
+- Sessions with high turn counts relative to output
 
-### Friction Points
+## Friction Points
 - Tools or commands that failed repeatedly
 - Topics where many turns were spent on clarification
 - Permission issues, environment problems, or config struggles
 
-### Repeated Patterns
+## Repeated Patterns
 - Similar work done across sessions that could be templated
 - Multi-step processes performed manually that could be automated
 - Information lookups that happen frequently
 
-### Tool Usage Insights
+## Tool Usage Insights
 - Most-used tools and how they were combined
-- Subagent usage patterns — were they effective?
-- Skills that were invoked vs could have been invoked
+- Subagent usage patterns
+- Skills invoked vs could have been invoked
 
-### Recommendations
-Concrete suggestions for:
+## Recommendations
 - Skills to create or modify
 - Workflow changes to try
 - Tools or configurations to adjust

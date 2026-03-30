@@ -4,51 +4,47 @@
 ---
 name: knowledge-extraction
 description: Extract reusable learnings, patterns, and skill candidates
-version: 1
+version: 2
 ---
 
 # Analysis Instructions
 
-Analyze session summaries to extract actionable knowledge that can be
-reused across projects and sessions.
+Extract actionable knowledge that can be reused across projects and sessions.
+Use `##` for sections, `###` for sub-groupings.
 
-## Format
-
-### Technical Learnings
-- New patterns, techniques, or APIs discovered
+## Technical Learnings
+- Patterns, techniques, or APIs discovered
 - Edge cases and their solutions
 - Configuration insights or environment setup knowledge
 
-### Architectural Patterns
+## Architectural Patterns
 - Design decisions made and their rationale
 - Patterns that worked well (candidates for reuse)
 - Anti-patterns discovered (things to avoid)
 
-### Skill Evolution
+## Skill Evolution
 
-#### Existing Skill Refinements
-For skills that were used during the sessions but showed friction, gaps, or missed potential:
+### Existing Skill Refinements
+For skills that showed friction, gaps, or missed potential:
 - **Skill name:** Which skill
-- **What worked:** What the skill did well
-- **What fell short:** Specific friction points, gaps, or missed edge cases observed
-- **Suggested change:** Concrete improvement (new section, updated flowchart, additional triggers, etc.)
+- **What fell short:** Specific friction points or missed edge cases
+- **Suggested change:** Concrete improvement
 - **Evidence:** Which sessions revealed this
 
-#### New Skill Candidates
-For workflows or patterns that don't have a skill yet but should:
+### New Skill Candidates
+For workflows that don't have a skill yet but should:
 - **What it would do:** Brief description
 - **Evidence:** Which sessions showed the need
 - **Estimated value:** How often would this save time?
 
-### Reusable Code & Snippets
-- Helper functions or utilities written that could be extracted
+## Reusable Code & Snippets
+- Helper functions or utilities worth extracting
 - Configuration patterns worth templating
 - Shell commands or pipelines worth saving
 
-### Process Insights
+## Process Insights
 - What worked well in the development process
 - What could be improved about how Claude Code is used
-- Communication patterns that were effective or ineffective
 
 ## Extraction Hints
 

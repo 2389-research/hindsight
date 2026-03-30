@@ -69,14 +69,24 @@ version: 1
 
 # Analysis Instructions
 
-Instructions for the aggregation phase. Tell the aggregating agent:
-- What question this lens answers
-- How to structure the output (section headers, format)
-- What to look for across sessions (patterns, themes, anomalies)
+Brief directive: what this lens produces and how bullets should read.
+Content principles go here — keep them short and testable.
+
+The lens owns all formatting. The aggregation layer only enforces three
+rules: date range filtering, no fabrication, and omit-don't-pad. Everything
+else — heading levels, bullet style, section order, project grouping,
+acronym policy — must be specified here.
 
 ## Format
 
+Use `##` for sections, `###` for sub-groupings (e.g., per-project).
 Specify the exact output sections and what goes in each.
+
+Formatting rules belong in the section they apply to, not in a
+separate "formatting guide" block. Different sections may need
+different rules — e.g., past-tense bullets for accomplishments,
+infinitive-tense for future work. Blanket rules that span all
+sections cause compliance failures when they don't fit every context.
 
 ## Extraction Hints
 
