@@ -4,53 +4,65 @@
 ---
 name: content-mining
 description: Surface blog posts, social media content, and announcements from session activity
-version: 3
+version: 4
 ---
 
 # Analysis Instructions
 
-Find moments worth writing about publicly. Package each as a publishable pitch.
-Lead with the insight, not the tool — the story is the problem and solution.
+Find moments worth writing about publicly. Lead with the insight, not the tool —
+the story is the problem and solution, not the output volume.
 
-Content-worthy: problems others would google, non-obvious debugging stories,
-things that shipped, architectural patterns, deep thoughts on craft, before/after
-transformations. NOT content-worthy: routine maintenance, project-specific details,
-incomplete investigations. Aim for format diversity across the report.
+The report has three sections: Long Form, Short Form, and Themes. Prioritize
+signal over completeness — fewer strong ideas beat many weak ones.
 
-Use `##` for sections, `###` for individual content opportunities.
+Use `##` for sections, `###` for individual items.
 
-## Top Picks
+## Long Form
 
-The 3 highest-value opportunities. One sentence each on why they rank above the rest.
+Blog posts, tutorials, essays, or talks that need real writing effort.
 
-## Content Opportunities
+**Novelty threshold:** Only include ideas where the insight is genuinely
+interesting or useful to someone outside the author's immediate context. Ask:
+"Would a developer who doesn't know this project care?" If not, skip it.
+Routine accomplishments, volume metrics (lines deleted, tests passing, docs
+synced), and "I built X in Y hours" stories do not clear the bar unless there
+is a non-obvious insight, a surprising failure, or a transferable technique
+underneath. Prefer the debugging journey over the trophy.
 
-For each opportunity:
+Each long-form item is a lightweight pitch — just enough to decide whether
+to pursue it. If the idea moves forward, everything gets relitigated anyway.
 
+```
 ### [Suggested Title]
-- **Format**: blog post / tweet thread / short post / product announcement / demo video / TIL
-- **Audience**: developer community / personal brand / product users
-- **Effort**: quick (1-2 hours) / medium (half day) / deep (multi-day research)
-- **Pitch**: 2-3 sentences on the content angle and why it's interesting
-- **Key hook**: the one sentence that would make someone click
-- **Key example**: a code snippet, command, metric, or before/after that anchors the piece
-- **Risk**: editorial concerns — too niche, could be misread, reveals internal details
-- **Source sessions**: which sessions this draws from
+[One-line pitch — the idea in a single sentence]
 
-Order by estimated audience interest (most compelling first).
+**Why it's interesting**: 1-2 sentences on what makes this worth reading —
+the non-obvious insight, the surprising failure, or the transferable lesson.
+**Audience**: short, vibes-based — e.g., "standards nerds", "Android devs
+who've been burned by Hilt scoping", "anyone who's stared at a slow migration"
+**⚠ CAUTION**: [only if there is a real brand safety, confidentiality, or
+accuracy concern — omit entirely if none]
+```
 
-## Quick Hits
+Do not include source session IDs. Reference projects by name if needed.
 
-Short-form content that doesn't need a full write-up — single observations,
-one-liners, screenshots, or TILs that work as standalone social posts.
-Bulleted list with the post text and source session.
+Order by how interesting the insight is, not by output volume.
 
-If a Quick Hit has broader appeal than a main Content Opportunity, call that out.
+## Short Form
+
+Standalone social posts, TILs, and one-liners ready to copy-paste into a
+scheduling tool. Each bullet is the post text itself — a complete thought,
+not a teaser for a longer piece.
+
+Bulleted list. Max 2 bullets from any single session to prevent over-indexing.
+
+If a short-form item has broader appeal than a long-form idea, call that out.
 
 ## Themes
 
-Cross-cutting patterns that connect multiple content opportunities — the "meta"
-stories. Useful for talks, essays, or series framing.
+Cross-cutting patterns that connect multiple ideas — the "meta" stories.
+Frame each theme as a potential series or talk, not just an observation.
+Name which long-form or short-form items it connects.
 
 ## Extraction Hints
 
@@ -64,3 +76,5 @@ When summarizing each session, also capture:
 - New projects or features that reached a demo-able or usable state
 - Problems that took multiple attempts to solve (the struggle is the story)
 - Key code snippets, commands, or configuration that could anchor a blog post
+- Who did what — the "agent did this" vs "human did this" distinction often
+  changes the story entirely
