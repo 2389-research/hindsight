@@ -1,10 +1,10 @@
 <!-- ABOUTME: Lens for auditing skill usage, diagnosing missed triggers, and specifying new skills. -->
-<!-- ABOUTME: Produces actionable skill-building briefs with trigger conditions, specs, and ROI analysis. -->
+<!-- ABOUTME: Produces actionable skill-building briefs with trigger fixes, new skill specs, and pipeline candidates. -->
 
 ---
 name: skill-review
 description: Audit skill usage, diagnose missed triggers, and specify new skill candidates
-version: 1
+version: 2
 ---
 
 # Analysis Instructions
@@ -12,6 +12,11 @@ version: 1
 Analyze how Claude Code skills were used (or not used) across sessions. The goal
 is to produce actionable output for skill builders: what to fix, what to build,
 and what to leave alone.
+
+All findings should be clearly categorized as one of three types:
+- **Trigger fix**: a config/rule change to an existing skill (minutes to implement)
+- **New skill**: a tool to build (hours to days)
+- **Pipeline candidate**: a multi-skill composition to formalize (hours)
 
 On first mention of each project, include a 1-line description so the report is
 readable without prior context.
@@ -42,22 +47,43 @@ For each skill that should have fired but didn't, analyze in depth:
 - Was the skill not loaded in this project context?
 - Did the agent not recognize the pattern?
 - Was there a competing behavior that took priority?
+- **Contrast with a session where the same skill DID fire** (if available) —
+  what was different about the prompt, the timing, or the task shape?
 
 ### What should the corrected trigger look like?
 - Propose a specific trigger pattern (file presence, user message pattern,
   agent action, project state)
 - Show the before/after: current trigger vs. proposed trigger
 - If the current trigger is unknown, note that and propose what it should be
+- **False-positive risk**: could this trigger fire when it shouldn't? What
+  guardrails prevent false activation? (e.g., task too small, user already
+  specified approach, skill would add overhead without value)
 
-## Skill Successes
+## Skill Successes — and Friction Within Success
 
-Document skills that worked well — what made them succeed:
-- What was the task? What skill fired?
-- Why did the trigger work correctly?
-- Did the skill's output quality match expectations?
+Document skills that worked well, but also examine rough edges:
+- What was the task? What skill fired? Why did the trigger work correctly?
+- **Friction within success**: even when the skill worked, were there wasted
+  steps, unnecessary back-and-forth, format mismatches between skill output and
+  the next step, or moments where the skill's structure slowed things down?
 - Is this a reusable pattern (skill composition, pipeline) worth documenting?
 
-Keep this section brief. Success stories earn 2-3 sentences each, not full analyses.
+Brief is fine — 3-5 sentences per success. But do not skip the friction question.
+
+## Trigger Fixes
+
+For each existing skill that needs a trigger correction, summarize as a concrete
+action item:
+- **Skill name**
+- **Current trigger** (inferred or documented)
+- **Proposed trigger** (specific pattern)
+- **False-positive guardrail**
+- **Implementation**: what file/config/rule needs to change?
+- **Effort**: `trivial` (CLAUDE.md line), `small` (skill file edit), `medium`
+  (requires testing across projects)
+
+This section should be a quick-reference list, not a repeat of the Missed Trigger
+Analysis above. The analysis section explains *why*; this section says *what to do*.
 
 ## New Skill Candidates
 
@@ -89,18 +115,29 @@ For each proposed new skill:
 - **Expected ROI**: annual time savings vs. build + maintenance cost
 - **Rank** relative to other candidates
 
-Omit this section if no session produced a viable skill candidate.
+Push hard to extract candidates. If a session involved a multi-step manual workflow
+that the agent repeated, ask whether it should be a skill — even if the time savings
+are modest, cognitive overhead reduction matters. Aim for at least 2 candidates from
+a full day of sessions.
 
-## Skill Composition Patterns
+Omit this section only if genuinely no session produced a viable candidate.
+
+## Pipeline Candidates
 
 When multiple skills were used together as a pipeline (e.g., brainstorm → plan →
-subagent dispatch), document the composition:
-- What skills formed the pipeline?
-- How did they hand off to each other?
-- Could this pipeline be applied to other task types?
-- What task characteristics make this pipeline a good fit?
+subagent dispatch), evaluate whether the composition should be formalized:
+- What skills formed the pipeline? How did they hand off?
+- **Should this become a single orchestrator skill?** What would it look like?
+  What would the trigger be?
+- Could this pipeline apply to other task types? Which ones, and which wouldn't
+  work?
+- What task characteristics make this pipeline a good fit vs. overkill?
 
-Omit this section if no multi-skill pipelines were observed.
+Also flag cases where a pipeline *should have been used* but wasn't — sessions
+where multiple skills would have composed well but were used individually or not
+at all.
+
+Omit this section if no multi-skill pipelines were observed or missed.
 
 ## Extraction Hints
 
@@ -113,3 +150,7 @@ When summarizing each session, also capture:
 - Pipeline patterns: sequences of skill invocations that worked together
 - User statements about wanting automation ("I wish...", "this should be...",
   "can you just...")
+- **Friction within successful skills**: steps that felt slow, outputs that
+  needed manual reformatting, unnecessary questions the skill asked
+- **Cross-session frequency signals**: has this skill gap appeared before?
+  Is this a recurring miss or a one-off?
