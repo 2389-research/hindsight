@@ -1,6 +1,6 @@
 {
-  "name": "cc-review",
-  "description": "Analyze Claude Code session logs through configurable lenses to produce summary reports",
+  "name": "hindsight",
+  "description": "Analyze Claude Code sessions through configurable lenses. Past performance is not a guarantee of future results. Unless you measure it.",
   "version": "1.0.0",
   "skills": "./skills/"
 }

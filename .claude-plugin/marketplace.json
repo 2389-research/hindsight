@@ -1,9 +1,9 @@
 {
-  "name": "cc-review-dev",
+  "name": "hindsight-dev",
   "owner": { "name": "dylanr" },
   "plugins": [
     {
-      "name": "cc-review",
+      "name": "hindsight",
       "source": "./"
     }
   ]
