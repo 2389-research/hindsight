@@ -1,26 +1,26 @@
 #!/usr/bin/env bash
-# ABOUTME: Removes cc-review user directories after confirmation.
+# ABOUTME: Removes hindsight user directories after confirmation.
 # ABOUTME: Does not remove the plugin itself, only user-generated data and config.
 
 set -euo pipefail
 
-CC_REVIEW_DIR="${HOME}/.claude/cc-review"
+HINDSIGHT_DIR="${HOME}/.claude/hindsight"
 
-if [[ ! -d "$CC_REVIEW_DIR" ]]; then
-  echo "Nothing to uninstall — ${CC_REVIEW_DIR} does not exist."
+if [[ ! -d "$HINDSIGHT_DIR" ]]; then
+  echo "Nothing to uninstall — ${HINDSIGHT_DIR} does not exist."
   exit 0
 fi
 
 echo "This will remove:"
-echo "  ${CC_REVIEW_DIR}/lenses/ (your lens files, including customizations)"
-echo "  ${CC_REVIEW_DIR}/reports/ (all generated reports)"
+echo "  ${HINDSIGHT_DIR}/lenses/ (your lens files, including customizations)"
+echo "  ${HINDSIGHT_DIR}/reports/ (all generated reports)"
 echo ""
 read -p "Are you sure? (y/N) " -n 1 -r
 echo ""
 
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-  rm -rf "$CC_REVIEW_DIR"
-  echo "Removed ${CC_REVIEW_DIR}"
+  rm -rf "$HINDSIGHT_DIR"
+  echo "Removed ${HINDSIGHT_DIR}"
 else
   echo "Cancelled."
 fi

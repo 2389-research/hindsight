@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
-# ABOUTME: Installs cc-review default lenses and creates user directories.
+# ABOUTME: Installs hindsight default lenses and creates user directories.
 # ABOUTME: Safe to re-run — does not overwrite existing user lenses.
 
 set -euo pipefail
 
-CC_REVIEW_DIR="${HOME}/.claude/cc-review"
-LENSES_DIR="${CC_REVIEW_DIR}/lenses"
-REPORTS_DIR="${CC_REVIEW_DIR}/reports"
+HINDSIGHT_DIR="${HOME}/.claude/hindsight"
+LENSES_DIR="${HINDSIGHT_DIR}/lenses"
+REPORTS_DIR="${HINDSIGHT_DIR}/reports"
 
 # Find the plugin's lenses directory (relative to this script)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PLUGIN_LENSES_DIR="${SCRIPT_DIR}/../lenses"
 
-echo "Installing cc-review..."
+echo "Installing hindsight..."
 
 # Create directories
 mkdir -p "$LENSES_DIR"
@@ -42,5 +42,5 @@ echo "  Lenses: ${LENSES_DIR}"
 echo "  Reports: ${REPORTS_DIR}"
 echo ""
 echo "Usage:"
-echo "  Interactive: /cc-review today standup"
-echo "  Headless:    claude -p \"use the cc-review skill for today with the standup lens\""
+echo "  Interactive: /hindsight today standup"
+echo "  Headless:    claude -p \"use the hindsight skill for today with the standup lens\""
