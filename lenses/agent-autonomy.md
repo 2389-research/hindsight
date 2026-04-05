@@ -1,133 +1,232 @@
-<!-- ABOUTME: Lens for analyzing agent autonomy levels, decision-making gaps, and self-correction opportunities. -->
-<!-- ABOUTME: Challenges the human-AI division of labor and proposes protocols for expanding agent authority. -->
+<!-- ABOUTME: Lens that treats every human message as a system failure and builds elimination plans to reach zero. -->
+<!-- ABOUTME: Interrogates every human intervention, identifies root causes, and proposes permanent fixes. -->
 
 ---
 name: agent-autonomy
-description: Analyze agent autonomy, decision-making gaps, and opportunities to expand agent authority
-version: 1
+description: Treat every human message as a system failure. Interrogate each one. Build a plan to eliminate all of them.
+version: 3
 ---
 
 # Analysis Instructions
 
-Analyze how autonomously the agent operated across sessions. The goal is not just
-to identify where the agent failed, but to ask: why was the human in the loop at
-all? Every human intervention is either necessary (genuine judgment call) or a
-sign that the agent's decision-making should be expanded.
+**The target is zero human messages.** Every message the human sent is a failure
+of the system — the agent, its tools, its memory, its configuration, or its
+judgment. Your job is to explain each failure and propose a permanent fix so
+that message never needs to be sent again.
+
+This is not an agent performance review. This is a forensic investigation into
+why the human had to be present at all.
+
+The only human messages that survive scrutiny are those where:
+1. The human is providing information that exists nowhere the agent can access, AND
+2. There is no system change that could make that information accessible, AND
+3. The cost of the agent guessing wrong is irreversible
+
+If ANY of those conditions is false, the message is eliminable. Classify it as
+such and propose the fix.
 
 On first mention of each project, include a 1-line description so the report is
 readable without prior context.
 
 Use `##` for sections, `###` for sub-groupings.
 
-## Autonomy Scorecard
+## Human Message Autopsy
 
-For each session, assess:
+This is the centerpiece of the report. For EVERY human message across ALL
+sessions, perform an autopsy:
 
-| Session | Project | Autonomy | Human Interventions | Avoidable? |
-|---------|---------|----------|---------------------|------------|
+| # | Session | Human Message (quoted or paraphrased) | Root Cause | Fix Type | Fix Description | Eliminable? |
+|---|---------|--------------------------------------|------------|----------|-----------------|-------------|
 
-**Autonomy levels**:
-- `high`: agent executed autonomously with minimal correction. Human mostly
-  approved, gave high-level direction, or made genuine judgment calls.
-- `medium`: agent did useful work but needed several redirections or corrections
-  that it could have avoided.
-- `low`: human had to closely manage the agent. Frequent corrections, approach
-  changes, or micromanagement required.
+**Root Cause categories** — every message has exactly one:
+- `missing-memory`: Agent doesn't remember a user preference it's been told before (e.g., "use pnpm"). Fix: persistent memory.
+- `missing-context`: Agent didn't read available files/config (e.g., Tailwind config in project root). Fix: pre-task context loading.
+- `permission-seeking`: Agent asked for approval on a reversible action. Fix: act first, report after.
+- `complexity-over-simplicity`: Agent tried a sophisticated approach, human had to redirect to simple one. Fix: simplest-first protocol.
+- `missing-skill`: Agent lacked a capability and needed human guidance (e.g., device testing). Fix: build the skill.
+- `missing-inference`: Agent had all signals to make this decision but didn't connect them (e.g., user works on VW project → tire tools are for VW scene). Fix: inference protocol.
+- `human-enjoyment`: Human inserted themselves because they wanted to, not because they had to (e.g., picking colors). Fix: agent proposes defaults, human overrides only if they want to.
+- `correction-not-retained`: Agent was corrected earlier in the session and repeated the mistake. Fix: session correction store.
+- `cross-session-learning-failure`: Agent has been corrected for this across multiple sessions. Fix: CLAUDE.md rule or persistent memory.
+- `trust-deficit`: Human asked "did you check?" or "are you sure?" because trust hasn't been established. Fix: proactive verification.
+- `completion-theater`: "Anything else?" / "Looks good" / "Nope" — zero-information exchanges. Fix: stop asking, stop confirming.
+- `irreducible`: Genuinely cannot be eliminated. Explain why in detail. This should be RARE — 1-3 per day maximum.
 
-For each intervention, classify it:
-- **Necessary**: genuine judgment call the agent can't reasonably make (e.g.,
-  product design preference, business priority decision)
-- **Avoidable**: agent had enough information to make this decision itself
-  (e.g., using the right framework, trying simpler approaches first)
-- **Preventable**: agent could have avoided the situation entirely with better
-  planning or self-monitoring (e.g., reading config before starting, using a
-  skill pipeline)
+**Fix Type categories:**
+- `memory`: Write to persistent memory so the agent never asks again
+- `config`: Add to CLAUDE.md or project config
+- `skill`: Build a skill or hook that fires automatically
+- `protocol`: Decision-making sequence the agent follows
+- `inference`: Agent should have connected available signals
+- `elimination`: Just stop doing the thing (e.g., stop asking "anything else?")
+- `none`: Irreducible — explain why
 
-## Gold Standard Analysis
+After the table, provide summary counts:
 
-Identify the session with the highest autonomy and best output. For this session:
-- What made it work? Was it the task type, the prompt, the skill pipeline, or
-  the agent's approach?
-- What structural patterns enabled high autonomy? (e.g., brainstorm-then-execute,
-  subagent delegation, clear spec before implementation)
+| Root Cause | Count | % of Total | Total Time Wasted |
+|------------|-------|------------|-------------------|
 
-Then for each session that scored lower:
-- Why didn't it achieve gold-standard autonomy?
-- What specific changes would bring it closer? Be concrete — name the skill,
-  protocol, or behavior that would help.
-- Would applying the gold-standard pattern to this task have worked? Why or why not?
+If `irreducible` is more than 10% of messages, you are being too conservative.
+Re-examine each one. The bar for irreducible is: the human provided information
+that exists NOWHERE the agent could access AND no system change could make it
+accessible AND guessing wrong would be irreversible.
 
-## Information Available but Not Used
+## The Compounding Tax
 
-Flag every instance where the agent had information in context that it failed
-to apply:
-- Config files read but ignored (e.g., framework config present but agent
-  used raw alternatives)
-- Prior context from the same session that wasn't carried forward
-- Error messages or logs that contained the answer but the agent tried
-  something else
-- User corrections from earlier in the session that the agent repeated the
-  same mistake after
+Every unnecessary human message has two costs:
+1. **Direct cost**: The time to read, think, type, and context-switch
+2. **Compounding cost**: Each intervention trains the human to intervene more and
+   the agent to wait for approval more. This is a feedback loop that gets worse
+   over time.
 
-For each, explain what the agent should have done differently and what
-mechanism would ensure it uses available information in the future.
+For each root cause category with 3+ instances, estimate:
+- Direct time cost across the day
+- How this pattern changes human behavior in future sessions (e.g., "after 3
+  Tailwind violations, the human now supervises all CSS work — estimated 10-15
+  min/session of added oversight")
+- What it would take to break the cycle (e.g., "3 consecutive violation-free
+  sessions to rebuild trust")
 
-## Decision Protocol Proposals
+Also estimate the **aggregate compounding tax**: if today's patterns continue
+unchanged, how much additional human time will be wasted tomorrow? Next week?
+The goal is to make the cost of inaction viscerally clear.
 
-For each recurring case where the human had to make a decision the agent could
-have made, propose a **decision protocol** — not a rule, but a structured
-decision-making process the agent should follow.
+## What the Human Should Stop Doing
 
-A decision protocol is different from a rule:
-- **Rule**: "Try the simplest approach first" (agent interprets, may ignore)
-- **Protocol**: "Before implementing, generate 3 approaches ranked by complexity.
-  Implement approach #1. If it fails within 2 tool calls, try #2. If #2 fails,
-  stop and ask the user which direction to go."
+This section is addressed directly to the human. It should be blunt.
 
-For each protocol:
-- **Situation**: when does this protocol apply?
-- **Steps**: the decision sequence the agent should follow
-- **Escalation**: at what point should the agent stop and involve the human?
-- **Evidence**: which sessions show this protocol would have helped?
-- **Expected outcome**: what would the session have looked like with this protocol?
+For each human behavior pattern that generates unnecessary messages:
+- **The behavior**: What the human does (e.g., "confirms every push to a feature branch")
+- **Why it's unnecessary**: What makes this safe to stop
+- **What to do instead**: The replacement behavior, if any (e.g., "review the PR at the end instead of confirming each push")
+- **Messages eliminated**: How many messages per day this saves
+- **Trust prerequisite**: What the agent needs to do first to earn the right
+  to ask the human to stop (e.g., "zero framework violations for 3 sessions
+  before asking the human to stop supervising CSS")
 
-## Self-Correction Opportunities
+Be direct. "You confirmed pushes 8 times today. Feature branch pushes are
+instantly reversible. Stop confirming them." That's the tone.
 
-Identify moments where the agent should have recognized it was going wrong and
-self-corrected without human intervention:
-- Iterating on the same approach 3+ times without success
-- Trying increasingly complex solutions when simpler ones exist
-- Repeating a mistake the user already corrected earlier in the session
-- Spending disproportionate time on a subtask relative to its importance
+But also be fair: if the human's behavior is a rational response to agent
+failures, say so. "You supervised CSS because the agent violated Tailwind twice.
+That's rational. The fix is on the agent's side first."
 
-For each, propose a **self-monitoring mechanism**:
-- What signal should the agent watch for?
-- What action should it take when it detects the signal?
-- Example: "After 3 failed approaches to the same problem, stop and try the
-  absolute simplest version before continuing."
+## What the Agent Must Fix
 
-## Autonomy Roadmap
+For each agent behavior that caused human messages:
+- **The behavior**: What the agent did wrong
+- **Instance count**: How many times across how many sessions
+- **Root cause**: Why the agent does this (permission-seeking trained by RLHF?
+  Missing context? Genuine uncertainty?)
+- **The fix**: Be specific. Not "the agent should be more autonomous" but "the
+  agent should check for `tailwind.config.*` before writing any CSS and use
+  Tailwind utilities exclusively when found"
+- **Enforcement mechanism**: How to ensure the fix sticks. If your proposed
+  mechanism is a CLAUDE.md rule, check the evidence — did the agent already
+  violate existing CLAUDE.md rules? If yes, do NOT propose another rule.
+  Propose something harder to ignore: a hook, a skill, a pre-commit check.
+  If a rule is the only option, acknowledge: "This relies on the same
+  compliance mechanism that failed for [X]. Expected violation rate: ~[N]%."
 
-For each task type observed (CSS/visual work, device testing, greenfield
-implementation, bug fixing, data migration, etc.):
-- **Current state**: how autonomous is the agent for this task type today?
-- **Target state**: what would full autonomy look like? What decisions would the
-  agent make, and what would the human only need to approve?
-- **Gap**: what skills, protocols, or information does the agent need to get there?
-- **Next step**: the single most impactful change to move toward the target state
+Name all psychological patterns. Every pattern needs a name because names
+make them detectable. Look for at least:
+- **Approval addiction**: asking permission for reversible actions
+- **Complexity signaling**: sophisticated approaches to demonstrate effort
+- **Completion theater**: "anything else?" exchanges with zero information
+- **Anxiety-driven checking**: human asks "did you verify?" / "are you sure?"
+- **Creative insertion**: human makes aesthetic choices they could delegate
+- **Premature escalation**: asking for help before exhausting own capabilities
+- **Learned helplessness**: becoming MORE permission-seeking after correction
+- **Hedging language**: "I could do X or Y" instead of just doing X
+- **Preamble padding**: explaining what you're about to do instead of doing it
+- **Status narration**: "I'll now do X" before doing X
+- **Defensive over-explanation**: over-explaining after a correction to pre-empt criticism
+
+## Elimination Plan
+
+For each root cause category, propose a concrete elimination plan:
+
+### Memory Gaps (missing-memory, cross-session-learning-failure)
+List every preference or pattern that should be persisted. Be specific:
+- What to remember (e.g., "user's package manager is pnpm")
+- Where to store it (persistent memory, CLAUDE.md, project config)
+- How to surface it (pre-task context loading, session-start routine)
+
+### Context Failures (missing-context, correction-not-retained)
+List every instance where information was available but not used:
+- What file/config contained the answer
+- Why the agent didn't read it
+- What trigger should cause the agent to read it in the future
+
+### Permission-Seeking (permission-seeking, completion-theater, trust-deficit)
+For each type of unnecessary question the agent asked:
+- The question pattern
+- Why it's unnecessary (reversibility analysis)
+- The replacement behavior ("just do it and report")
+- For trust-deficit: what the agent must do first to earn trust
+
+### Skill Gaps (missing-skill)
+For each capability the agent lacked:
+- What the skill would do
+- What triggers it
+- Build vs. buy assessment
+- Priority (based on message count it would eliminate)
+
+### Inference Failures (missing-inference, complexity-over-simplicity)
+For each case where the agent had signals but didn't connect them:
+- What signals were available
+- What conclusion they pointed to
+- What protocol would ensure the agent connects them next time
+
+## Zero-Message Targets
+
+For each session, state:
+- **Current message count**: exact number
+- **Target**: the number of messages with all proposed fixes applied. This
+  MUST be the true minimum — do not add padding. If your elimination plan
+  removes N messages, the target is current minus N.
+- **Irreducible remainder**: which specific messages survive and why
+
+For aggregate targets: sum the irreducible remainders across sessions.
+That's your target. Do not add a buffer. Do not present conservative and
+aggressive variants. One number. Commit to it.
+
+If your aggregate target is more than 20% of current messages, go back and
+re-examine your "irreducible" classifications. For a solo developer on
+personal projects where all work is reversible, the true irreducible
+minimum is typically: initial task request + genuinely novel information
+the agent has no way to infer. That's usually 1-3 messages per session.
+
+## Regression Ratchet
+
+For each target:
+- **Trigger**: target + 1 message. Not target + 50%. Target + 1.
+- **Action**: investigate which fix failed and why
+- **Escalation**: if the same regression occurs in 2 consecutive sessions,
+  escalate from protocol to enforcement (rule → hook → skill → hard constraint)
+
+Include an aggregate ratchet: if daily total exceeds the aggregate target,
+trigger a full review.
+
+## The Meta-Question
+
+End with: "Why did a human have to request this analysis?" If the agent should
+be generating this report automatically after each day's sessions and proposing
+fixes as commits — say so, and propose the mechanism.
 
 ## Extraction Hints
 
-When summarizing each session, also capture:
-- Every human intervention: what did the user correct or redirect?
-- For each intervention, could the agent have made this decision itself?
-  What information did it have?
-- Moments where the agent iterated without converging — how many attempts
-  before landing on a solution?
+When summarizing each session, capture:
+- **Every human message**: exact quote or close paraphrase. Classify as
+  decision, confirmation, information, correction, praise, or zero-content.
+- **Every agent permission-seeking message**: exact quote or close paraphrase.
+  These are the upstream cause of human confirmations.
+- For each human message: what information did the agent have? Could it have
+  acted without the message?
 - Cases where the agent had information (config files, prior corrections,
-  error messages) and didn't use it
-- Self-correction moments: did the agent ever catch its own mistake? How?
-- Task types: what kind of work was this? (visual, debugging, greenfield,
-  data, infrastructure, etc.)
-- Agent initiative: did the agent ever proactively do something useful without
-  being asked? (e.g., running tests, suggesting improvements, reading context)
+  error messages) and didn't use it — with time cost
+- Self-correction moments: did the agent catch its own mistake?
+- Agent initiative: did the agent proactively do something useful without
+  being asked?
+- Cross-session patterns: has this correction/mistake appeared before?
+- Task types: what kind of work was this?
