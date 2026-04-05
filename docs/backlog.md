@@ -1,21 +1,21 @@
-<!-- ABOUTME: Backlog of future work items for cc-review. -->
+<!-- ABOUTME: Backlog of future work items for hindsight. -->
 <!-- ABOUTME: Tracks deferred tasks that came up during development. -->
 
-# cc-review Backlog
+# Hindsight Backlog
 
 ## ccvault prerequisite management
-Figure out how to ensure ccvault is installed and synced before cc-review runs.
+Figure out how to ensure ccvault is installed and synced before hindsight runs.
 Options: install script that checks for/installs ccvault, prereq check in Phase 0,
 or document as a manual step. Need to handle both `brew install` and `go install` paths.
 
 ## Incorporate ccvault skill
 The ccvault project ships its own skill (`ccvault:ccvault`) with search patterns,
-orient/recall workflows, and a full tool reference. cc-review should reference or
+orient/recall workflows, and a full tool reference. hindsight should reference or
 depend on that skill so extraction subagents and lenses can use ccvault's search
 playbook effectively (cost ladder, query operators, pagination patterns).
 
 ## Lens-writing subskill
-~~Add a subskill to cc-review that guides writing new lenses.~~ **Done** — implemented
+~~Add a subskill to hindsight that guides writing new lenses.~~ **Done** — implemented
 as `skills/lens-writing/SKILL.md` with create/evaluate modes and persona-based panels.
 
 ## ~~Upstream: session slugs in extraction pipeline~~
@@ -38,6 +38,6 @@ allocation across sessions remains unsolved (would need multi-session correlatio
 
 ## ~~Aggregation compliance: LLM instruction following~~
 ~~The aggregation agent doesn't fully comply with lens instructions.~~ **Addressed** —
-added explicit aggregation compliance rules to Phase 4 of the cc-review skill covering
+added explicit aggregation compliance rules to Phase 4 of the hindsight skill covering
 date range enforcement, heading hierarchy, content principles, fabrication prevention,
 and project description usage. Needs re-evaluation to confirm improvement.

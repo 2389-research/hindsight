@@ -1,8 +1,8 @@
-# CC Review Plugin
+# Hindsight
 
-This plugin provides the `cc-review` skill for analyzing Claude Code session logs.
+Analyze your Claude Code sessions through configurable lenses. *Past performance is not a guarantee of future results. Unless you measure it.*
 
 ## Usage
 
-Interactive: `/cc-review <date-range> <lens-name>`
-Headless: `claude -p "use the cc-review skill for <date-range> with the <lens-name> lens"`
+Interactive: `/hindsight <date-range> <lens-name>`
+Headless: `claude -p "use hindsight for <date-range> with the <lens-name> lens"`
