@@ -1,13 +1,13 @@
-<!-- ABOUTME: Main orchestrator skill for the cc-review plugin. -->
+<!-- ABOUTME: Main orchestrator skill for the hindsight plugin. -->
 <!-- ABOUTME: Dispatches subagents to summarize sessions, then applies a lens for cross-cutting analysis. -->
 
 ---
-name: cc-review
+name: hindsight
 description: Analyze Claude Code session logs through configurable lenses. Use when asked to review, summarize, or analyze session history.
 args: freeform natural language (or structured date + lens)
 ---
 
-# CC Review — Session Log Analyzer
+# Hindsight — Session Log Analyzer
 
 ## Input
 
@@ -40,7 +40,7 @@ Structured formats like `yesterday standup` still work — the skill handles bot
    (`search_conversations`, `get_session_summary`, `get_turns`, `list_sessions`)
    to read session data. If MCP tools are not available, fall back to the ccvault CLI.
 
-3. **User directories** must exist at `~/.claude/cc-review/`. If they don't, run:
+3. **User directories** must exist at `~/.claude/hindsight/`. If they don't, run:
    ```bash
    bash <plugin-root>/scripts/install.sh
    ```
@@ -68,8 +68,8 @@ If the date range is ambiguous, ask the user to clarify.
 **Step 2: Determine lens**
 
 Read the available lenses from both locations (list both directories):
-- `~/.claude/cc-review/lenses/` (user/built-in lenses)
-- `<project-root>/.claude/cc-review/lenses/` (project-scoped lenses)
+- `~/.claude/hindsight/lenses/` (user/built-in lenses)
+- `<project-root>/.claude/hindsight/lenses/` (project-scoped lenses)
 
 Project lenses take precedence if a name collision occurs.
 
@@ -107,8 +107,8 @@ Report to the user: "Found N sessions across M projects for <date-range>."
 ### Phase 2: Load Lens
 
 1. Read the lens file from its resolved location (check project lenses first,
-   then user lenses: `<project-root>/.claude/cc-review/lenses/<lens-name>.md`,
-   falling back to `~/.claude/cc-review/lenses/<lens-name>.md`)
+   then user lenses: `<project-root>/.claude/hindsight/lenses/<lens-name>.md`,
+   falling back to `~/.claude/hindsight/lenses/<lens-name>.md`)
 2. Check if it has an `## Extraction Hints` section
 3. If it does, extract the text of that section — it will be appended to the extraction prompt
 4. Extract the `version` field from the lens frontmatter. If not present, default to `1`
@@ -121,7 +121,7 @@ This keeps subagent context out of the main conversation.
 **Cache check:**
 
 Before extracting, check if summaries already exist at
-`~/.claude/cc-review/reports/<date-range>/summaries/`. For each session in the list,
+`~/.claude/hindsight/reports/<date-range>/summaries/`. For each session in the list,
 check if `<sessionId>.md` exists in that directory. If ALL sessions have existing
 summaries, skip extraction entirely and report:
 "Found cached summaries for N sessions. Skipping extraction."
@@ -134,7 +134,7 @@ If SOME sessions have summaries but others don't, extract only the missing ones 
 Before dispatching subagents, create the summaries staging directory:
 
 ```bash
-mkdir -p ~/.claude/cc-review/reports/<date-range>/summaries
+mkdir -p ~/.claude/hindsight/reports/<date-range>/summaries
 ```
 
 Where `<date-range>` follows the same format as the report output path (e.g., `2026-03-23`
@@ -216,7 +216,7 @@ Once all session summaries have been written to disk:
 
 1. Read the full lens file from its resolved location (same precedence as Phase 2)
 2. Extract the `# Analysis Instructions` section (everything between `# Analysis Instructions` and `## Extraction Hints`, or end of file if no extraction hints)
-3. Read ALL session summary files from `~/.claude/cc-review/reports/<date-range>/summaries/`
+3. Read ALL session summary files from `~/.claude/hindsight/reports/<date-range>/summaries/`
 4. Apply the lens analysis instructions to produce the final report
 5. The report should follow the format specified in the lens
 
@@ -233,8 +233,8 @@ Once all session summaries have been written to disk:
 ### Phase 5: Write Report
 
 1. Determine the output path:
-   - For single dates or named ranges resolving to a single day: `~/.claude/cc-review/reports/YYYY-MM-DD/<lens-name>.md`
-   - For multi-day ranges: `~/.claude/cc-review/reports/YYYY-MM-DD_to_YYYY-MM-DD/<lens-name>.md`
+   - For single dates or named ranges resolving to a single day: `~/.claude/hindsight/reports/YYYY-MM-DD/<lens-name>.md`
+   - For multi-day ranges: `~/.claude/hindsight/reports/YYYY-MM-DD_to_YYYY-MM-DD/<lens-name>.md`
 2. Create the directory if needed using `mkdir -p`
 3. Write the report file using the Write tool. Include a version line after the report title:
    `*Generated with <lens-name> lens v<version>*`

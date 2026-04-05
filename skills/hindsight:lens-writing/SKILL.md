@@ -1,16 +1,16 @@
-<!-- ABOUTME: Subskill for creating, evaluating, and refining cc-review lenses. -->
+<!-- ABOUTME: Subskill for creating, evaluating, and refining hindsight lenses. -->
 <!-- ABOUTME: Uses persona-based judge panels to assess lens quality through a RED/GREEN/REFACTOR cycle. -->
 
 ---
 name: lens-writing
-description: Use when creating, evaluating, or asking about cc-review lenses or analysis perspectives — including when the user describes a new way to analyze session data without using the word "lens"
+description: Use when creating, evaluating, or asking about hindsight lenses or analysis perspectives — including when the user describes a new way to analyze session data without using the word "lens"
 ---
 
-# Lens Writing — Create & Evaluate cc-review Lenses
+# Lens Writing — Create & Evaluate hindsight Lenses
 
 ## Overview
 
-This skill helps you create new cc-review lenses and evaluate existing ones using
+This skill helps you create new hindsight lenses and evaluate existing ones using
 persona-based judge panels. It follows a RED/GREEN/REFACTOR cycle: run the lens,
 evaluate with a panel, refine based on findings, repeat.
 
@@ -25,7 +25,7 @@ If intent is ambiguous, use AskUserQuestion to ask which mode.
 
 ## Lens Architecture
 
-The cc-review pipeline has four layers. This skill only modifies layers 3 and 4:
+The hindsight pipeline has four layers. This skill only modifies layers 3 and 4:
 
 | Layer | What It Controls | This Skill |
 |-------|-----------------|------------|
@@ -46,9 +46,9 @@ it belongs to before making changes:
 
 Lenses can live in two places:
 
-- **User lenses** (`~/.claude/cc-review/lenses/<name>.md`): global lenses available
+- **User lenses** (`~/.claude/hindsight/lenses/<name>.md`): global lenses available
   across all projects. Built-in lenses ship here on install.
-- **Project lenses** (`<project-root>/.claude/cc-review/lenses/<name>.md`): scoped
+- **Project lenses** (`<project-root>/.claude/hindsight/lenses/<name>.md`): scoped
   to a specific codebase, checked into the repo.
 
 When listing available lenses, check both locations. Project lenses take precedence
@@ -108,7 +108,7 @@ Clarify the lens purpose through conversation. Ask one question at a time:
    a future onboarding engineer)
 3. **What scope?** Per-session signals vs cross-session patterns vs both?
 4. **What existing lens is closest?** Read available lenses from both
-   `~/.claude/cc-review/lenses/` and `<project-root>/.claude/cc-review/lenses/`
+   `~/.claude/hindsight/lenses/` and `<project-root>/.claude/hindsight/lenses/`
    and check if one already covers this need or could be extended.
 
 Use AskUserQuestion with multiple choice where possible.
@@ -125,16 +125,16 @@ Before writing:
   may be unnecessary
 
 Ask the user where to write the lens via AskUserQuestion:
-- **User lens** (`~/.claude/cc-review/lenses/`): available across all projects
-- **Project lens** (`<project-root>/.claude/cc-review/lenses/`): scoped to this repo
+- **User lens** (`~/.claude/hindsight/lenses/`): available across all projects
+- **Project lens** (`<project-root>/.claude/hindsight/lenses/`): scoped to this repo
 
 Write to the chosen location.
 
 ### Step 3: RED — Run and Evaluate
 
-1. Run cc-review with the new lens against a date range.
+1. Run hindsight with the new lens against a date range.
    Ask the user which date range to test against (default: yesterday).
-   Use the cc-review main skill: `/cc-review <date-range> <lens-name>`
+   Use the hindsight main skill: `/hindsight <date-range> <lens-name>`
 
 2. Once output exists, proceed to the **Evaluation Core** (below).
 
@@ -158,13 +158,13 @@ issues and tighten the lens.
 
 Determine:
 - **Which lens?** Detect from user intent or ask via AskUserQuestion.
-- **Existing output?** Check `~/.claude/cc-review/reports/` for recent output
+- **Existing output?** Check `~/.claude/hindsight/reports/` for recent output
   from this lens. If found, ask user whether to use existing output or run fresh.
 - **Date range?** If running fresh, ask which date range.
 
-### Step 2: Run cc-review (if needed)
+### Step 2: Run hindsight (if needed)
 
-If no existing output, invoke the cc-review main skill to generate it.
+If no existing output, invoke the hindsight main skill to generate it.
 
 ### Step 3: Proceed to Evaluation Core
 
@@ -217,7 +217,7 @@ This is the shared evaluation logic used by both Create and Evaluate modes.
 Create the evaluation output directory:
 
 ~~~bash
-mkdir -p ~/.claude/cc-review/evaluations/<lens-name>/<timestamp>
+mkdir -p ~/.claude/hindsight/evaluations/<lens-name>/<timestamp>
 ~~~
 
 Where `<timestamp>` is ISO-8601 format (e.g., `2026-03-25T14-30`).
@@ -225,14 +225,14 @@ Where `<timestamp>` is ISO-8601 format (e.g., `2026-03-25T14-30`).
 Copy the current lens file as a snapshot:
 
 ~~~bash
-cp ~/.claude/cc-review/lenses/<lens-name>.md \
-   ~/.claude/cc-review/evaluations/<lens-name>/<timestamp>/lens-snapshot.md
+cp ~/.claude/hindsight/lenses/<lens-name>.md \
+   ~/.claude/hindsight/evaluations/<lens-name>/<timestamp>/lens-snapshot.md
 ~~~
 
 ### Step 2: Generate and Confirm Personas
 
 Follow the Persona Generation process above. Write the confirmed personas to:
-`~/.claude/cc-review/evaluations/<lens-name>/<timestamp>/personas.md`
+`~/.claude/hindsight/evaluations/<lens-name>/<timestamp>/personas.md`
 
 ### Step 3: Dispatch Judge Panel
 
@@ -241,7 +241,7 @@ structure:
 
     You are **{persona name}** — {persona role description}.
 
-    You are evaluating a cc-review report generated by the "{lens-name}" lens.
+    You are evaluating a hindsight report generated by the "{lens-name}" lens.
 
     **Your perspective:** You care about:
     {persona evaluation criteria as bullets}
@@ -281,6 +281,6 @@ Once all judges return, read all 5 evaluations and produce a synthesis:
 Present the layer diagnosis to the user for confirmation via AskUserQuestion.
 
 **Write the synthesis to:**
-`~/.claude/cc-review/evaluations/<lens-name>/<timestamp>/synthesis.md`
+`~/.claude/hindsight/evaluations/<lens-name>/<timestamp>/synthesis.md`
 
 Report results to the user.
