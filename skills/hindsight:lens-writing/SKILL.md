@@ -6,7 +6,7 @@ name: lens-writing
 description: Use when creating, evaluating, or asking about hindsight lenses or analysis perspectives — including when the user describes a new way to analyze session data without using the word "lens"
 ---
 
-# Lens Writing — Create & Evaluate hindsight Lenses
+# Lens Writing — Create & Evaluate Hindsight Lenses
 
 ## Overview
 
