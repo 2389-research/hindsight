@@ -167,4 +167,4 @@ Changes to the session summary schema or extraction prompt affect every lens. Th
 
 ## License
 
-TBD
+MIT — see [LICENSE](LICENSE).
