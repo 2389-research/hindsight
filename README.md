@@ -165,6 +165,16 @@ Changes to the session summary schema or extraction prompt affect every lens. Th
 - Evidence that the change doesn't break existing lenses
 - Testing against at least 2 existing lenses to verify compatibility
 
+## Limitations
+
+- **ccvault is a hard dependency.** Hindsight reads session data exclusively through ccvault. If ccvault isn't installed and synced, nothing works.
+- **Output quality depends on lens quality.** A vague lens produces a vague report. This is why the contribution bar for default lenses is deliberately high — see [Contributing](#contributing).
+- **Token cost scales with session volume.** Each session gets its own extraction subagent. A month of heavy usage can mean dozens of parallel subagents and meaningful token cost per run. Summaries are cached per date range to avoid re-extraction.
+- **Session data fidelity is bounded by ccvault.** Hindsight can only analyze what ccvault surfaces. Anything ccvault doesn't extract isn't available to lenses.
+- **No multi-session time correlation.** Hindsight does not currently compute time-per-project across sessions. Each summary has its own duration, but cross-session allocation is not solved.
+
+See [`docs/backlog.md`](docs/backlog.md) for known gaps and deferred work.
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
