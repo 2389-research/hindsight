@@ -17,8 +17,6 @@ triage skill consumes. The output is machine-actionable drafts, not prose.
 Verbatim quotes beat paraphrase. The user's exact words are the primary
 signal — paraphrasing loses the fidelity that durability judgment depends on.
 
-Use `##` for sections, `###` for sub-groupings.
-
 ## Clustering
 
 Cluster verbatim corrections across sessions before judging any of them.
@@ -38,8 +36,7 @@ correction in a different session.
 
 Target keep rate is 10–20% of raw corrections. A 10-session range yielding
 3 drafts is a good report; the same range yielding 30 drafts is a bad one.
-When in doubt, discard. The intent plugin's live retro catches near-misses;
-this lens is for the ones that survive cross-session scrutiny.
+When in doubt, discard.
 
 ## Scope Rule
 
@@ -133,9 +130,8 @@ Emit exactly this shape:
 
     ## Next: Materialize
     Run `/intent-pending materialize-from-report <report-path>` to stash these
-    drafts into `.intent/pending/`. (Companion PR to the intent plugin extends
-    `/intent-pending` with the reader — until it lands, drafts can be
-    copy-pasted from the fenced blocks above.)
+    drafts into `.intent/pending/`. If that command isn't available, the fenced
+    blocks above can be copy-pasted directly into the target paths.
 
 ## Zero-Drafts Fallback
 
