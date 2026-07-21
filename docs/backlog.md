@@ -3,6 +3,15 @@
 
 # Hindsight Backlog
 
+## Companion PR: `/intent-pending materialize-from-report`
+Extend the `intent` plugin's `/intent-pending` skill with a
+`materialize-from-report <path>` command that reads a hindsight
+`intent-retro` report, parses the fenced draft blocks + `**Target path:**`
+lines, and stashes each draft to the target `.intent/pending/` file.
+Companion to the `intent-retro` lens. Lives in the `intent` plugin repo,
+not this one. Until it lands, users can copy-paste the fenced blocks
+manually from the report.
+
 ## ccvault prerequisite management
 
 Figure out how to ensure ccvault is installed and synced before hindsight runs.
