@@ -1,10 +1,10 @@
-<!-- ABOUTME: Subskill for creating, evaluating, and refining hindsight lenses. -->
-<!-- ABOUTME: Uses persona-based judge panels to assess lens quality through a RED/GREEN/REFACTOR cycle. -->
-
 ---
 name: lens-writing
 description: Use when creating, evaluating, or asking about hindsight lenses or analysis perspectives — including when the user describes a new way to analyze session data without using the word "lens"
 ---
+
+<!-- ABOUTME: Subskill for creating, evaluating, and refining hindsight lenses. -->
+<!-- ABOUTME: Uses persona-based judge panels to assess lens quality through a RED/GREEN/REFACTOR cycle. -->
 
 # Lens Writing — Create & Evaluate Hindsight Lenses
 

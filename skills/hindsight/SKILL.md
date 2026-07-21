@@ -1,11 +1,11 @@
-<!-- ABOUTME: Main orchestrator skill for the hindsight plugin. -->
-<!-- ABOUTME: Dispatches subagents to summarize sessions, then applies a lens for cross-cutting analysis. -->
-
 ---
 name: hindsight
 description: Analyze Claude Code session logs through configurable lenses. Use when asked to review, summarize, or analyze session history.
 args: freeform natural language (or structured date + lens)
 ---
+
+<!-- ABOUTME: Main orchestrator skill for the hindsight plugin. -->
+<!-- ABOUTME: Dispatches subagents to summarize sessions, then applies a lens for cross-cutting analysis. -->
 
 # Hindsight — Session Log Analyzer
 
