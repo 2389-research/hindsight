@@ -4,7 +4,7 @@
 ---
 name: intent-retro
 description: Mine sessions for durable user intent — taste rules, constraints, standing preferences — and draft ledger entries for the intent plugin
-version: 1
+version: 2
 ---
 
 # Analysis Instructions
@@ -59,8 +59,8 @@ Decide each keeper's scope by where the evidence sits:
 Emit each keeper as a fenced code block. On the line immediately above the
 fence, print `**Target path:** <path>` using the scope rule above.
 
-The fenced block must contain the intent plugin's exact draft format —
-five lines, in this order, no additions:
+The fenced block must contain the intent plugin's exact draft format, in
+this order, no additions:
 
 ```
 # Proposed intent entry: <short title>
@@ -68,10 +68,13 @@ five lines, in this order, no additions:
 **Why:** <the user's verbatim words + session ref>
 **How to apply:** <when/where the rule kicks in>
 **Suggested scope:** project <name> | global — <one-line reason>
+**Durability signal:** <one-line summary of why this survived discard — e.g., "repeated across 4 projects in 3 weeks" / "verbatim in-session repeat with hardline language" / "meta-rule about the intent-capture system itself">
+**Single-project justification:** <one line — only present when a single-project rule is proposed as global scope; must satisfy one of: (a) reinforced across ≥2 projects, (b) intrinsically meta/methodological, (c) explicitly extends existing global doctrine — cite which>
 ```
 
-Do not deviate from this format. Downstream `/intent-pending` parses the
-five lines by prefix.
+Do not deviate from field names or order. Downstream `/intent-pending`
+parses fields by `**Prefix:**`. The last field is conditional (present
+only on single-project → global overrides); all others are required.
 
 ## Provenance Ledger
 
@@ -82,8 +85,17 @@ the session IDs and verbatim quotes that back the draft:
 **Provenance:** <session-id> — "<verbatim quote>"; <session-id> — "<verbatim quote>"
 ```
 
-Quotes must be verbatim. Paraphrase loses signal. If a quote is long, keep
-the load-bearing clause verbatim and trim with `[...]` only around it.
+Quotes must be verbatim. Paraphrase loses signal.
+
+When the session summary contains multiple variants of the same quote
+(e.g., a truncated form in the correction summary and a fuller form in
+the transcript excerpt), use the LONGEST verbatim variant. Never trim
+leading discourse markers like `"ok, "` / `"well, "` / `"yeah, "` /
+`"so, "` — those markers are part of the user's actual speech and can
+carry tonal weight (agreement, resignation, redirection).
+
+If a quote is long, keep the load-bearing clause verbatim and trim with
+`[...]` only around it.
 
 ## Possibly-Already-Captured Flag
 
@@ -111,6 +123,10 @@ Sort keepers in this exact order:
 Within each tier, order by strength of quote (clearest standing-preference
 language first).
 
+Emit each tier under its own explicit `### Tier N — <description>` heading
+in the report (see Output Structure). If a tier has zero drafts, omit that
+tier's heading entirely — do not emit empty tiers.
+
 ## Output Structure
 
 Emit exactly this shape:
@@ -120,7 +136,10 @@ Emit exactly this shape:
 
     ## Drafts
 
-    ### <short title>
+    ### Tier 1 — Cross-project repeats
+    (Repeat across ≥2 projects. Omit this heading if no drafts qualify.)
+
+    #### <short title>
     **Target path:** <target-path>
     ```
     <fenced draft in the intent-plugin format>
@@ -128,10 +147,24 @@ Emit exactly this shape:
     **Provenance:** <session-id> — "<verbatim quote>"; …
     [possibly already captured — check <path>]   (only when applicable)
 
+    ### Tier 2 — In-project repeats
+    (Repeat within 1 project across ≥2 sessions. Omit this heading if no drafts qualify.)
+
+    #### <short title>
+    ... (same shape as above)
+
+    ### Tier 3 — Single-instance durable
+    (Single-project, single-session. Each draft must carry a **Single-project justification:** inside the fenced block. Omit this heading if no drafts qualify.)
+
+    #### <short title>
+    ... (same shape as above)
+
     ## Next: Materialize
-    Run `/intent-pending materialize-from-report <report-path>` to stash these
-    drafts into `.intent/pending/`. If that command isn't available, the fenced
-    blocks above can be copy-pasted directly into the target paths.
+    Run `mkdir -p ~/.claude/intent/pending` if the global pending directory
+    doesn't exist yet, then `/intent-pending materialize-from-report
+    <report-path>` to stash the drafts into `.intent/pending/`. If that command
+    isn't available, the fenced blocks above can be copy-pasted directly into
+    the target paths.
 
 ## Zero-Drafts Fallback
 
