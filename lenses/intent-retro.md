@@ -16,6 +16,8 @@ triage skill consumes. The output is machine-actionable drafts, not prose.
 
 Verbatim quotes beat paraphrase. The user's exact words are the primary
 signal — paraphrasing loses the fidelity that durability judgment depends on.
+Preserve leading discourse markers ("ok, ", "so...", "yeah,"), typos, casing,
+and punctuation. If a quote must be trimmed, use `[...]` to mark the elision.
 
 ## Clustering
 
@@ -46,35 +48,57 @@ Decide each keeper's scope by where the evidence sits:
   `<project>/.intent/pending/YYYY-MM-DD-<slug>.md`.
 - **Same rule appears in ≥2 projects** → target path is
   `~/.claude/intent/pending/YYYY-MM-DD-<slug>.md` (global).
-- **1-project → global override** is permitted only when the draft includes
-  an explicit "why this is universal" line justifying the promotion (e.g.,
-  writing style, comms preferences, cross-cutting agent behavior). Without
-  that line, keep it project-scoped.
+- **1-project → global override** is permitted only when the draft can meet
+  at least one of three universality tests, stated explicitly on the draft:
+  1. **Meta test**: the rule governs how ALL future corrections/drafts are
+     handled (e.g., "how to route captured corrections" — inherently
+     cross-project by shape).
+  2. **Methodological test**: the rule is about how the agent reasons, not
+     about a domain artifact (e.g., "always merge evidence-mining with
+     outside-in readiness" — reasoning axis, cross-project by construction).
+  3. **Doctrine-extension test**: the rule cites and explicitly extends an
+     existing global doctrine entry along a new axis, with the reviewer's
+     cross-reference verified.
+
+  Without at least one of the three, keep it project-scoped and add
+  `[watch for repeat]` to the target path.
 
 `<slug>` is a short kebab-case handle for the rule (e.g., `no-hedging`,
 `prefer-tabs`, `stop-em-dashes`).
 
+**Category test (apply Draft-3-style):** For every draft, ask "is this a
+taste/interaction/aesthetic preference, or an engineering/architectural
+constraint or blast-radius rule?" Taste defaults toward global; constraints
+default toward project-local. When categorizing pushes against evidence-
+weight (e.g., a single-instance constraint would default project-local
+even if the universality tests seem to apply), the category rule wins —
+mark it project-scoped with `[watch for repeat]`.
+
 ## Emitting Keepers
 
 Emit each keeper as a fenced code block. On the line immediately above the
-fence, print `**Target path:** <path>` using the scope rule above.
+fence, print `**Target path:** <path>` using the scope rule above. If the
+draft is a project-scoped keeper held back from global promotion pending
+cross-project evidence, append ` [watch for repeat]` to the target-path line.
 
-The fenced block must contain the intent plugin's exact draft format, in
-this order, no additions:
+The fenced block must contain the intent plugin's draft format — the five
+base lines plus three lens-required fields, in this exact order:
 
 ```
 # Proposed intent entry: <short title>
-**Proposed entry (Taste|Constraints|Preference):** <the rule, 1-2 sentences>
-**Why:** <the user's verbatim words + session ref>
+**Proposed entry (Taste|Constraint|Preference):** <the rule, 1-2 sentences>
+**Why:** <the user's verbatim words + brief context>
 **How to apply:** <when/where the rule kicks in>
+**Single-project justification:** <one paragraph — required ONLY when scope is a single-project → global override; state which universality test(s) the draft passes>
+**Adjacent doctrine:** <cite existing intent.md entry this rule extends/sharpens, or state "none" — required for every global-scoped draft>
+**Durability signal:** <one line: "reinforced across N projects" | "verbatim in-session repeat" | "single-instance meta-rule (governs X)" | "single-instance methodological rule with in-session corroboration" — required>
 **Suggested scope:** project <name> | global — <one-line reason>
-**Durability signal:** <one-line summary of why this survived discard — e.g., "repeated across 4 projects in 3 weeks" / "verbatim in-session repeat with hardline language" / "meta-rule about the intent-capture system itself">
-**Single-project justification:** <one line — only present when a single-project rule is proposed as global scope; must satisfy one of: (a) reinforced across ≥2 projects, (b) intrinsically meta/methodological, (c) explicitly extends existing global doctrine — cite which>
 ```
 
-Do not deviate from field names or order. Downstream `/intent-pending`
-parses fields by `**Prefix:**`. The last field is conditional (present
-only on single-project → global overrides); all others are required.
+Downstream `/intent-pending` parses the base lines by prefix; the added
+fields (Single-project justification, Adjacent doctrine, Durability signal)
+travel with the pending .md file so the durability argument doesn't live
+only in the retro report.
 
 ## Provenance Ledger
 
@@ -82,89 +106,107 @@ Immediately after the fenced block, print one `**Provenance:**` line listing
 the session IDs and verbatim quotes that back the draft:
 
 ```
-**Provenance:** <session-id> — "<verbatim quote>"; <session-id> — "<verbatim quote>"
+**Provenance:** <session-id-shortform> — "<verbatim quote>"; <session-id> — "<verbatim quote>"
 ```
 
-Quotes must be verbatim. Paraphrase loses signal.
-
-When the session summary contains multiple variants of the same quote
-(e.g., a truncated form in the correction summary and a fuller form in
-the transcript excerpt), use the LONGEST verbatim variant. Never trim
-leading discourse markers like `"ok, "` / `"well, "` / `"yeah, "` /
-`"so, "` — those markers are part of the user's actual speech and can
-carry tonal weight (agreement, resignation, redirection).
-
+Session-ID shortform is the first 8 chars of the UUID. Quotes must be
+verbatim — preserve leading discourse markers, typos, casing, punctuation.
 If a quote is long, keep the load-bearing clause verbatim and trim with
-`[...]` only around it.
+`[...]` only around it, never mid-clause.
 
 ## Possibly-Already-Captured Flag
 
-If any session in the range touched an `INTENT.md` file (read or edit), and
-the captured diff overlaps a draft's rule, tag that draft with a line
-immediately after the provenance line:
+Check three sources for existing captures of each candidate keeper's rule:
+
+1. Every `<project>/.intent/pending/` directory across the projects in the
+   range (find with `find … -name '.intent' -type d`).
+2. The global standing-taste list in `~/.claude/subfiles/intent.md`.
+3. Project-scoped memory files at
+   `~/.claude/projects/<encoded-path>/memory/*.md`, especially any
+   `feedback_*.md` files — these are the memory-system analog of INTENT.md
+   entries and are the highest re-materialization risk when adjacent to
+   a keeper draft.
+
+If any of those already captures the rule (or a near-duplicate), tag the
+draft with a line immediately after the provenance line:
 
 ```
 [possibly already captured — check <path>]
 ```
 
-`<path>` points at the specific INTENT.md and, when possible, the line or
-section that overlaps. Do not emit this tag speculatively — only when a real
-diff overlap exists.
+`<path>` points at the specific file and, when possible, the section that
+overlaps. Do not emit this tag speculatively — only when a real overlap
+exists.
 
-## Sort Order
+## Sort Order and Tier Headings
 
-Sort keepers in this exact order:
+Sort keepers into three tiers and emit each tier under an explicit `###`
+heading (or `####` if drafts live under a `### Tier N` heading):
 
-1. Repeat across ≥2 projects (strongest durability signal)
-2. Repeat within 1 project across ≥2 sessions
-3. Single-project, single-session durable candidates — each must carry a
-   one-line justification for why it survived the discard cut
+- `### Tier 1 — Cross-project (≥2 projects)`
+- `### Tier 2 — Within-project repeat` (same project, ≥2 sessions, OR
+  verbatim in-session repeat across ≥2 user turns)
+- `### Tier 3 — Single-instance keepers (ordered by leverage)`
 
-Within each tier, order by strength of quote (clearest standing-preference
-language first).
-
-Emit each tier under its own explicit `### Tier N — <description>` heading
-in the report (see Output Structure). If a tier has zero drafts, omit that
-tier's heading entirely — do not emit empty tiers.
+Within Tier 3, order by leverage — meta-rules that govern all future drafts
+first, then methodological rules that shape agent reasoning, then domain
+constraints. This makes the highest-leverage drafts triage-visible first.
 
 ## Output Structure
 
 Emit exactly this shape:
 
     # Intent Retro — <date range>
-    Sessions scanned: N | Projects: <list> | Drafts: K
+    *Generated with intent-retro lens v<version>*
+
+    Drafts: N (X Tier 1, Y Tier 2, Z Tier 3)
 
     ## Drafts
 
-    ### Tier 1 — Cross-project repeats
-    (Repeat across ≥2 projects. Omit this heading if no drafts qualify.)
+    ### Tier 1 — Cross-project (≥2 projects)
 
     #### <short title>
-    **Target path:** <target-path>
+    **Target path:** <path>
     ```
-    <fenced draft in the intent-plugin format>
+    <fenced draft in the extended format>
     ```
-    **Provenance:** <session-id> — "<verbatim quote>"; …
+    **Provenance:** <session:quote>; …
     [possibly already captured — check <path>]   (only when applicable)
 
-    ### Tier 2 — In-project repeats
-    (Repeat within 1 project across ≥2 sessions. Omit this heading if no drafts qualify.)
+    ### Tier 2 — Within-project repeat
+    …
 
-    #### <short title>
-    ... (same shape as above)
+    ### Tier 3 — Single-instance keepers (ordered by leverage)
+    …
 
-    ### Tier 3 — Single-instance durable
-    (Single-project, single-session. Each draft must carry a **Single-project justification:** inside the fenced block. Omit this heading if no drafts qualify.)
+    ## Actionable notes
 
-    #### <short title>
-    ... (same shape as above)
+    ### Already captured (do not re-draft)
+    <existing pending drafts and memory captures that overlap; be complete>
+
+    ### Discarded but worth watching (single-instance; watch for cross-project repeat)
+    <one line per discard with reason>
 
     ## Next: Materialize
-    Run `mkdir -p ~/.claude/intent/pending` if the global pending directory
-    doesn't exist yet, then `/intent-pending materialize-from-report
-    <report-path>` to stash the drafts into `.intent/pending/`. If that command
-    isn't available, the fenced blocks above can be copy-pasted directly into
-    the target paths.
+
+    ```bash
+    mkdir -p ~/.claude/intent/pending
+    ```
+
+    Then: `/intent-pending materialize-from-report <report-path>`
+    (or copy-paste the fenced blocks into their target paths).
+
+    <details>
+    <summary>Report metadata</summary>
+
+    Sessions scanned, project list, discipline stats, range compliance,
+    revision log. Anything the triage reviewer doesn't need mid-triage.
+
+    </details>
+
+Everything above the `<details>` block is triage-actionable content.
+Everything inside it is provenance/audit-trail rigor that a triage reviewer
+should not have to scroll past.
 
 ## Zero-Drafts Fallback
 
@@ -180,11 +222,19 @@ qualified. A short honest report beats a padded one.
 
 When summarizing each session, capture:
 
-- **Verbatim corrections.** Every user correction, quoted exactly. Include
-  1–2 turns of surrounding agent action so the reader can see what the
-  correction was reacting to. Corrections include: interrupts; "no / not
-  that / wrong / don't / stop doing X"; scope pushback ("too much",
-  "simpler"); rejected approaches; taste reactions to presented UI or copy.
+- **Verbatim corrections.** Every user correction, quoted exactly.
+  **Preserve leading discourse markers** ("ok, ", "so...", "yeah,",
+  "hmm..."), typos, casing, and punctuation — no cleanup, no paraphrase.
+  Include 1–2 turns of surrounding agent action so the reader can see what
+  the correction was reacting to. Corrections include: interrupts;
+  "no / not that / wrong / don't / stop doing X"; scope pushback
+  ("too much", "simpler"); rejected approaches; taste reactions to
+  presented UI or copy.
+- **Canonical-verbatim rule.** For each correction, emit exactly one
+  canonical verbatim string. If the correction contains multiple sentences
+  and only part is load-bearing, elide with `[...]` — do not emit two
+  different truncations of the same user turn, which creates summary-
+  internal drift and downstream provenance instability.
 - **Standing-preference statements** even outside corrections: any turn
   containing "always / never / prefer / from now on / stop doing" applied
   to agent behavior.
