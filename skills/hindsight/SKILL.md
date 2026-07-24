@@ -143,7 +143,7 @@ For each session, construct the subagent prompt by combining:
 1. The extraction prompt from `<plugin-root>/skills/shared/extraction-prompt.md` (read it once and reuse)
 2. The session summary schema from `<plugin-root>/skills/shared/session-summary-schema.md` (read it once and reuse)
 3. If the lens has extraction hints, replace `{LENS_EXTRACTION_HINTS}` in the extraction prompt with those hints. If no hints, replace with empty string.
-4. **Source-specific instructions** — look up the `## <source>` section of `skills/shared/sources.md` for the session's source and inline its CLI-contract content in place of `{SOURCE_CLI_CONTRACT}`. For now, `<source>` is always `ccvault`.
+4. **Source-specific instructions** — look up the `## <source>` section of `skills/shared/sources.md` for the session's source and inline its CLI-contract content in place of `{SOURCE_CLI_CONTRACT}`. For now, `{source}` is always `ccvault`.
 5. The session ID, project name, and project path from the session list
 6. The date range being analyzed
 7. The output file path where the subagent should write its summary
