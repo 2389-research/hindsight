@@ -4,7 +4,7 @@
 
 Hindsight is a Claude Code plugin for analyzing session logs. If you see `/hindsight` in a conversation or a `.claude/hindsight/` directory in a project, here's what you need to know:
 
-- **`/hindsight <date-range> <lens>`** runs a session analysis pipeline. It reads Claude Code session logs via ccvault, extracts summaries, and produces a report through a configurable lens.
+- **`/hindsight <date-range> <lens>`** runs a session analysis pipeline. It reads session logs via ccvault or agentsview (auto-detected), extracts summaries, and produces a report through a configurable lens.
 - **`/hindsight:lens-writing`** is a subskill for creating and evaluating lenses.
 - **`~/.claude/hindsight/lenses/`** contains user-global lens files. **`<project>/.claude/hindsight/lenses/`** contains project-scoped lenses.
 - **`~/.claude/hindsight/reports/`** contains generated reports organized by date range and lens name.
@@ -63,7 +63,7 @@ The pipeline has four layers. Know which layer you're modifying:
 | Layer | File | What It Controls |
 | ------- | ------ | ----------------- |
 | 1 | `skills/shared/session-summary-schema.md` | Fields in every session summary |
-| 2 | `skills/shared/extraction-prompt.md` | How subagents read sessions via ccvault |
+| 2 | `skills/shared/extraction-prompt.md` | How subagents read sessions via the configured source |
 | 3 | Lens `## Extraction Hints` | Extra data a specific lens needs per-session |
 | 4 | Lens `## Analysis Instructions` | How the final report is synthesized |
 
@@ -76,17 +76,17 @@ The pipeline has four layers. Know which layer you're modifying:
 The main skill (`skills/hindsight/SKILL.md`) orchestrates five phases:
 
 0. **Interpret & Validate** — Parse input into date range + lens. Resolve natural language. Confirm interpretation with user.
-1. **Collect Sessions** — Query ccvault (MCP tools preferred, CLI fallback) for sessions in the date range.
+1. **Collect Sessions** — Query the available source(s) for sessions in the date range. If both ccvault and agentsview are installed, results are merged and deduplicated by session ID. See `skills/shared/sources.md` for per-source CLI contracts.
 2. **Load Lens** — Read the lens file, extract analysis instructions and extraction hints.
 3. **Extract Summaries** — Dispatch parallel subagents (batches of 5) to produce standardized summaries. Results are cached in `~/.claude/hindsight/reports/<date-range>/summaries/`.
 4. **Cross-Cutting Analysis** — Apply the lens to all summaries and produce the final report.
 5. **Write Report** — Save to `~/.claude/hindsight/reports/<date-range>/<lens-name>.md`.
 
-### ccvault Dependency
+### Session Source Dependency
 
-Hindsight reads session data through [ccvault](https://github.com/2389-research/ccvault). The pipeline prefers ccvault's MCP tools (`search_conversations`, `get_session_summary`, `get_turns`, `list_sessions`) and falls back to the ccvault CLI if MCP is unavailable.
+Hindsight reads session data through one of two interchangeable local-first tools: [ccvault](https://github.com/2389-research/ccvault) or agentsview. Phase 0 auto-detects which is installed at runtime; if both are present, Phase 1 queries both and merges the results (deduped by session ID). The canonical per-source CLI contracts live in `skills/shared/sources.md`.
 
-Do not attempt to read session JSONL files directly. Always go through ccvault.
+Do not attempt to read session JSONL files directly. Always go through the configured source.
 
 ### Where to Modify What
 
@@ -104,6 +104,6 @@ Do not attempt to read session JSONL files directly. Always go through ccvault.
 ### Conventions
 
 - All code files start with a two-line `ABOUTME:` comment explaining what the file does.
-- No mock implementations. The pipeline runs against real session data via ccvault.
+- No mock implementations. The pipeline runs against real session data via the configured source.
 - Lens files use the format documented in the [lens-writing skill](skills/hindsight:lens-writing/SKILL.md).
 - Design docs go in `docs/plans/YYYY-MM-DD-<topic>-design.md`. Implementation plans go in `docs/plans/YYYY-MM-DD-<topic>-implementation.md`.
