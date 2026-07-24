@@ -84,7 +84,7 @@ The main skill (`skills/hindsight/SKILL.md`) orchestrates five phases:
 
 ### Session Source Dependency
 
-Hindsight reads session data through one of two interchangeable local-first tools: [ccvault](https://github.com/2389-research/ccvault) or agentsview. Phase 0 auto-detects which is installed at runtime; if both are present, Phase 1 queries both and merges the results (deduped by session ID). The canonical per-source CLI contracts live in `skills/shared/sources.md`.
+Hindsight reads session data through one of two interchangeable local-first tools: [ccvault](https://github.com/2389-research/ccvault) or [agentsview](https://agentsview.io). Phase 0 auto-detects which is installed at runtime; if both are present, Phase 1 queries both and merges the results (deduped by session ID). The canonical per-source CLI contracts live in `skills/shared/sources.md`.
 
 Do not attempt to read session JSONL files directly. Always go through the configured source.
 
