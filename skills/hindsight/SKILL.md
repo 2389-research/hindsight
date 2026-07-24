@@ -50,7 +50,33 @@ Follow these phases in order. Do not skip phases.
 
 ### Phase 0: Interpret Input and Validate
 
-**Step 1: Determine date range**
+**Step 0: Detect available sources**
+
+Before doing anything else, probe which session-log sources are installed and healthy. Read `skills/shared/sources.md` and for each `## <source>` section, run its **Probe** command. Build an `AVAILABLE_SOURCES` list containing every source whose probe succeeds.
+
+    AVAILABLE_SOURCES=""
+
+    # ccvault
+    if command -v ccvault >/dev/null 2>&1 && ccvault orient --json >/dev/null 2>&1; then
+      AVAILABLE_SOURCES="$AVAILABLE_SOURCES ccvault"
+    fi
+
+    # agentsview
+    if command -v agentsview >/dev/null 2>&1 && agentsview session list --limit 1 --json >/dev/null 2>&1; then
+      AVAILABLE_SOURCES="$AVAILABLE_SOURCES agentsview"
+    fi
+
+If `AVAILABLE_SOURCES` is empty, halt and tell the user:
+
+> No session log source found. Install one of:
+> - ccvault: `brew install 2389-research/tap/ccvault && ccvault sync`
+> - agentsview: `brew install --cask agentsview && agentsview sync`
+
+If exactly one source is available, use it exclusively (single-source path — identical to today's ccvault-only behavior with agentsview substituted when appropriate).
+
+If both are available, proceed with dual-source Phase 1 (see next task — for now, treat this as a soft flag to plumb through, since dual-source merge is wired in Task 4).
+
+**Step 2: Determine date range**
 
 Interpret the user's input to extract a date range. Resolve to start and end dates
 (YYYY-MM-DD format). Use the Bash tool with `date` command for date math.
@@ -63,7 +89,7 @@ Common patterns:
 
 If the date range is ambiguous, ask the user to clarify.
 
-**Step 2: Determine lens**
+**Step 3: Determine lens**
 
 Read the available lenses from both locations (list both directories):
 
@@ -79,7 +105,7 @@ Match the user's intent to the best available lens:
 - If no lens intent is expressed, default to `standup`
 - If the intent doesn't clearly match any available lens, list the options and ask
 
-**Step 3: Confirm interpretation**
+**Step 4: Confirm interpretation**
 
 Before proceeding, briefly state what you understood:
 "Analyzing <date-range> with the <lens-name> lens."
