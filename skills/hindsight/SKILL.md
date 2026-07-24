@@ -76,7 +76,7 @@ If exactly one source is available, use it exclusively (single-source path — i
 
 If both are available, proceed with dual-source Phase 1 (see next task — for now, treat this as a soft flag to plumb through, since dual-source merge is wired in Task 4).
 
-**Step 2: Determine date range**
+**Step 1: Determine date range**
 
 Interpret the user's input to extract a date range. Resolve to start and end dates
 (YYYY-MM-DD format). Use the Bash tool with `date` command for date math.
@@ -89,7 +89,7 @@ Common patterns:
 
 If the date range is ambiguous, ask the user to clarify.
 
-**Step 3: Determine lens**
+**Step 2: Determine lens**
 
 Read the available lenses from both locations (list both directories):
 
@@ -105,7 +105,7 @@ Match the user's intent to the best available lens:
 - If no lens intent is expressed, default to `standup`
 - If the intent doesn't clearly match any available lens, list the options and ask
 
-**Step 4: Confirm interpretation**
+**Step 3: Confirm interpretation**
 
 Before proceeding, briefly state what you understood:
 "Analyzing <date-range> with the <lens-name> lens."
