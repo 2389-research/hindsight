@@ -47,4 +47,64 @@ tool results (default on), and thinking blocks (default on). Flags
 
 ## agentsview
 
-(Placeholder — filled in by Task 2.)
+**Probe (Phase 0):** `command -v agentsview >/dev/null 2>&1 && agentsview session list --limit 1 --json 2>/dev/null | head -1`
+
+**List sessions in date range (Phase 1):**
+
+    agentsview session list --json --date-from <YYYY-MM-DD> --date-to <YYYY-MM-DD> --include-one-shot --include-automated
+
+The CLI accepts native date-range flags (values are `YYYY-MM-DD`, not
+RFC3339), so no client-side date filtering is needed here. `--include-one-shot`
+and `--include-automated` opt in to rows agentsview excludes by default;
+including them lets hindsight's own filters decide what to keep, and it
+silences the "Excluded N sessions" stderr note that fires otherwise.
+
+The response wraps rows in `{sessions: [...], next_cursor, total}`:
+pagination is cursor-based (pass `--cursor <opaque>` to fetch the next
+page), default `--limit` is 200, max is 500. `total` is the count of
+matching rows across all pages, not the current page size.
+
+Session rows carry 36 fields. Ones hindsight uses:
+
+- `id` — session UUID (matches Claude Code's `sessionId` for Claude sessions, so ccvault and agentsview agree on IDs for the same session)
+- `project`, `cwd` — short project name (inferred from cwd) and absolute cwd path
+- `agent` — `"claude"`, `"codex"`, etc.; hindsight is source-agnostic and does not filter by this
+- `started_at`, `ended_at` — RFC3339 with milliseconds and `Z` suffix
+- `message_count`, `user_message_count` — size heuristics
+- `first_message` — truncated preview of the initiating user turn
+- `is_automated` — hindsight may want to skip these downstream
+- `model`, `health_score` — surfaced for lens use
+
+**Session metadata (Phase 3 subagent):**
+
+    agentsview session get <id> --json
+
+Returns a single JSON object (not wrapped). Superset of the list-row
+shape with `health_score_basis` (array of contributing signals) and
+`health_penalties` (object of applied penalties). Unknown IDs exit 1
+with `fatal: session <id> not found` on stderr and no stdout — same
+convention as ccvault.
+
+**Full transcript for extraction (Phase 3 subagent):**
+
+    agentsview session messages <id> --json --limit <N> --from <ordinal> --role user,assistant
+
+Chose `session messages --json` over `session export` because it returns
+a uniform normalized shape across agent types, matching hindsight's
+source-agnostic design — the extraction subagent doesn't need per-agent
+parsing knowledge. (`session export` streams raw agent-native JSONL,
+which for Claude sessions is Claude Code's on-disk format and for other
+agents is their native format.)
+
+Response shape:
+
+    {messages: [{id, session_id, ordinal, role, content, thinking_text, timestamp, has_tool_use, model, ...}, ...], count, first_ordinal, last_ordinal}
+
+`--from <ordinal>` and `--limit <N>` paginate through the `messages`
+array; `--role user,assistant` filters turn types.
+
+**Daemon and auth notes.** Daemon lifecycle is auto-managed by
+`agentsview sync`; there is no manual `daemon start` step. The localhost
+API is un-authenticated by default (`require_auth: false`); the
+`auth_token` in `~/.agentsview/config.toml` applies only to remote or
+`--server` requests, so the CLI path needs no auth handling.
