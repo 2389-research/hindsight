@@ -30,20 +30,12 @@ Structured formats like `yesterday standup` still work — the skill handles bot
 
 ## Prerequisites
 
-1. **ccvault** must be installed and synced. Verify by running:
+1. **A session log source** must be installed and synced. Currently supported:
+   - **ccvault** (`brew install 2389-research/tap/ccvault && ccvault sync`)
 
-   ```bash
-   ccvault orient --json 2>/dev/null | head -1
-   ```
+   See `skills/shared/sources.md` for probe commands and CLI contracts.
 
-   If this fails, tell the user to install ccvault (`brew install 2389-research/tap/ccvault`)
-   and run `ccvault sync` first.
-
-2. **ccvault MCP server** must be available. The skill uses ccvault's MCP tools
-   (`search_conversations`, `get_session_summary`, `get_turns`, `list_sessions`)
-   to read session data. If MCP tools are not available, fall back to the ccvault CLI.
-
-3. **User directories** must exist at `~/.claude/hindsight/`. If they don't, run:
+2. **User directories** must exist at `~/.claude/hindsight/`. If they don't, run:
 
    ```bash
    bash <plugin-root>/scripts/install.sh
@@ -96,17 +88,12 @@ If neither lenses directory exists, tell the user to run the install script and 
 
 ### Phase 1: Collect Sessions
 
-Use ccvault to find sessions in the date range. Try the MCP tool first, fall back to CLI:
+Use the source's `list-sessions` command (see `skills/shared/sources.md`
+`## <source>` section) to find sessions in the date range. Filter by
+`started_at` client-side.
 
-**Via MCP (preferred):**
-Call `list_sessions` and filter results by date range. If a project filter is relevant
-(from the user's input), include it.
-
-**Via CLI (fallback):**
-
-```bash
-ccvault list-sessions --after <start-date> --before <end-date> --json
-```
+For now, use the `## ccvault` contract — additional sources are added in
+a follow-up task.
 
 If no sessions are found, report "No sessions found for the specified date range" and stop.
 
@@ -123,8 +110,9 @@ Report to the user: "Found N sessions across M projects for <date-range>."
 
 ### Phase 3: Extract Session Summaries (Parallel Subagents)
 
-For each session, dispatch a subagent to produce a summary using ccvault's MCP tools.
-This keeps subagent context out of the main conversation.
+For each session, dispatch a subagent to produce a summary using the session's
+source CLI (see `skills/shared/sources.md`). This keeps subagent context out of
+the main conversation.
 
 **Cache check:**
 
@@ -155,15 +143,16 @@ For each session, construct the subagent prompt by combining:
 1. The extraction prompt from `<plugin-root>/skills/shared/extraction-prompt.md` (read it once and reuse)
 2. The session summary schema from `<plugin-root>/skills/shared/session-summary-schema.md` (read it once and reuse)
 3. If the lens has extraction hints, replace `{LENS_EXTRACTION_HINTS}` in the extraction prompt with those hints. If no hints, replace with empty string.
-4. The session ID, project name, and project path from the session list
-5. The **date range** being analyzed
-6. The output file path where the subagent should write its summary
+4. **Source-specific instructions** — look up the `## <source>` section of `skills/shared/sources.md` for the session's source and inline its CLI-contract content in place of `{SOURCE_CLI_CONTRACT}`. For now, `<source>` is always `ccvault`.
+5. The session ID, project name, and project path from the session list
+6. The date range being analyzed
+7. The output file path where the subagent should write its summary
 
 The subagent prompt should be structured as:
 
 ```text
 You are a session extraction agent. Your job is to read a Claude Code session
-via ccvault's MCP tools and produce a standardized summary.
+and produce a standardized summary.
 
 ## Your Task
 
@@ -178,24 +167,13 @@ which activity falls within the window. If no activity occurred in this window,
 write a summary with just the Metadata section and note "No activity in date range"
 in the What Happened section.
 
-## How to Read the Session
-
-Use ccvault's MCP tools to access session data. Follow this sequence:
-
-1. Call `get_session_summary` with session_id to get metadata, turn counts,
-   token usage, tools used, and first/last messages.
-2. Call `get_turns` with session_id, paginating through all turns (limit=50,
-   increment offset). Use type="user" first to understand what the human asked,
-   then type="assistant" to see responses and tool usage.
-3. For long sessions (100+ turns), focus on user turns to understand the arc,
-   then sample assistant turns at key decision points rather than reading every turn.
-4. **Filter by date range.** Each turn has a timestamp. Skip turns outside the
-   requested date range. Only include activities, decisions, and outcomes from
-   turns within the window.
+**Filter by date range.** Each turn has a timestamp. Skip turns outside the
+requested date range. Only include activities, decisions, and outcomes from
+turns within the window.
 
 ## Instructions
 
-{contents of extraction-prompt.md, with {LENS_EXTRACTION_HINTS} replaced}
+{contents of extraction-prompt.md, with {SOURCE_CLI_CONTRACT} and {LENS_EXTRACTION_HINTS} replaced}
 
 ## Output Schema
 
