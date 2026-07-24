@@ -32,10 +32,10 @@ Scale the "What Happened" narrative to the session's complexity.
 ## Metadata Extraction Tips
 
 - **Session Slug**: Look for the human-readable session name in system entries or
-  the first user message. If `get_session_summary` returns a slug field, use it.
-  Otherwise, leave blank rather than fabricating one.
-- **Duration**: Compute from the start and end timestamps returned by
-  `get_session_summary`. Format as HH:MM wall clock time.
+  the first user message. If the `show` command output includes a slug field,
+  use it. Otherwise, leave blank rather than fabricating one.
+- **Duration**: Compute from the start and end timestamps in the `show` command
+  output. Format as HH:MM wall clock time.
 - **Project Description**: Write a one-line description of what this project is,
   inferred from the session content (e.g., "Android email client" or
   "automotive parts catalog"). This helps report readers who aren't familiar
