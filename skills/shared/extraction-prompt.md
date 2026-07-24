@@ -3,7 +3,7 @@
 
 # Session Extraction Prompt
 
-You are analyzing a single Claude Code session to produce a standardized summary
+You are analyzing a single session to produce a standardized summary
 following the Session Summary Schema.
 
 ## How to Read the Session
