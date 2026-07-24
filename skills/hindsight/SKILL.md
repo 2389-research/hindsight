@@ -114,16 +114,21 @@ If neither lenses directory exists, tell the user to run the install script and 
 
 ### Phase 1: Collect Sessions
 
-Use the source's `list-sessions` command (see `skills/shared/sources.md`
-`## <source>` section) to find sessions in the date range. Filter by
-`started_at` client-side.
+For each source in `AVAILABLE_SOURCES` (from Phase 0):
 
-For now, use the `## ccvault` contract — additional sources are added in
-a follow-up task.
+1. Look up its `## <source>` section in `skills/shared/sources.md`
+2. Run its list-sessions command over the date range from Phase 0
+3. Parse the JSON output
+4. Tag each session row with `source: "<source-name>"`
+5. Filter client-side by the source's timestamp field where the source's CLI doesn't natively support date-range flags (ccvault requires this; agentsview does not since its `--date-from`/`--date-to` handle it natively)
 
-If no sessions are found, report "No sessions found for the specified date range" and stop.
+Concatenate all tagged rows. Dedupe by session `id`: if the same ID appears from two sources, keep the ccvault-sourced row and drop the agentsview one. This is a naive tie-break — ccvault is preferred because its extraction assumptions match its field names, and the "both installed with overlapping coverage" case is uncommon.
 
-Report to the user: "Found N sessions across M projects for <date-range>."
+If the final merged list is empty: halt with "No sessions found for the specified date range."
+
+Report to the user: "Found N sessions across M projects for <date-range> (sources: <comma-separated-list>)."
+
+The tagged `source` field on each session row propagates into Phase 3 for source-aware subagent dispatch (see Task 5).
 
 ### Phase 2: Load Lens
 
