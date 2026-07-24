@@ -5,17 +5,19 @@ Branch: `feature/agentview-source`
 
 ## Problem
 
-Hindsight currently reads Claude Code session data exclusively through
+Hindsight currently reads session data exclusively through
 [ccvault](https://github.com/2389-research/ccvault). The `README.md`
 Limitations section calls this out: "ccvault is a hard dependency. If
 ccvault isn't installed and synced, nothing works."
 
-[AgentsView](https://agentsview.io) (kenn-io/agentsview) is a local-first
-session indexer with the same shape — SQLite backed, CLI + web UI, one
-binary, brew-installable — but with two capabilities ccvault doesn't have:
-support for 20+ coding agents (Claude Code, Codex, Devin, Forge, OpenCode,
-…) and a broader deployment story (Docker, Postgres, DuckDB, S3-backed
-roots).
+Both ccvault and [AgentsView](https://agentsview.io) (kenn-io/agentsview)
+are local-first session indexers with the same shape — SQLite-backed,
+CLI + local server, one binary, brew-installable. Both are multi-agent
+at the ingestion layer: ccvault ships adapters for `claudecode`, `codex`,
+`hex`, `jeff`, `nanoclaw` (with more being added); agentsview supports
+Claude Code, Codex, Devin, Forge, OpenCode, and 20+ others. Both
+normalize the underlying formats into a common session/turn/tool-call
+shape by the time the CLI surfaces it.
 
 Some users use ccvault, some will move to agentsview, some may have both
 installed side-by-side. Hindsight should support all three, without
@@ -23,12 +25,16 @@ forcing a config file or breaking existing installs.
 
 ## Non-goals
 
-- Multi-agent extraction (Codex/Devin sessions). The extraction prompt is
-  Claude-shaped. Adding non-Claude support is a separate future design.
 - A first-party MCP server for agentsview.
 - Deprecating ccvault. Existing installs must produce byte-identical
   reports after this change.
 - Any change to lens files, session-summary schema, or report format.
+- Per-agent extraction prompts. Both sources hand hindsight a
+  session/turn/tool-call shape regardless of which agent produced the
+  raw data. Lens quality against agent-autonomous sessions (e.g.,
+  nanoclaw) is bounded by what those sessions contain — a session with
+  no user text produces a summary with no user-text findings, which is
+  correct, not degraded.
 
 ## Approach
 
@@ -187,11 +193,12 @@ Two properties worth naming:
 
 ## What we're explicitly not deciding here
 
-- Multi-agent extraction. Codex/Devin/Forge sessions are structurally
-  different from Claude sessions. Supporting them will require a new
-  extraction prompt (or per-agent extraction prompts). Not here.
 - First-party agentsview MCP. Even if one lands, our subagents use CLI
   in practice; adopting MCP later would be a swap-in at the sources.md
   section level, not a re-architecture.
 - Deprecating ccvault. It works; users use it; nothing to gain by
   removing it.
+- Per-agent extraction prompts. Both sources normalize to the same
+  session shape; no per-agent branching is needed at the extraction
+  layer. If a lens wants to filter by agent type later, that's a lens-
+  layer decision, not a pipeline change.
