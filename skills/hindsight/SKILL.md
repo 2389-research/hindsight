@@ -69,6 +69,7 @@ Before doing anything else, probe which session-log sources are installed and he
 If `AVAILABLE_SOURCES` is empty, halt and tell the user:
 
 > No session log source found. Install one of:
+>
 > - ccvault: `brew install 2389-research/tap/ccvault && ccvault sync`
 > - agentsview: `brew install --cask agentsview && agentsview sync`
 

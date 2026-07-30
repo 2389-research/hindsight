@@ -56,6 +56,7 @@ Prereqs: rename both binaries.
    SKILL.md Phase 0 Step 0:
 
    > No session log source found. Install one of:
+   >
    > - ccvault: `brew install 2389-research/tap/ccvault && ccvault sync`
    > - agentsview: `brew install --cask agentsview && agentsview sync`
 
