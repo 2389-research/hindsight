@@ -5,30 +5,35 @@
 ## Per-draft scope audit
 
 ### Draft #1 — "Verify current state before triaging stale artifacts"
+
 - **Suggested scope:** global (`~/.claude/intent/pending/2026-07-22-verify-current-state.md`)
 - **Evidence supports it?** Yes. Four verbatim corrections across three distinct projects (block-friends, quoindroid, fantastty ×2) in the 3-week window. Cleanly clears the "≥2 projects" bar per the lens spec.
 - **Override justification present?** N/A — no override needed.
 - **Correct?** Yes. Textbook global promotion by evidence weight.
 
 ### Draft #2 — "Never let evidence-mining alone define scope; merge with outside-in readiness"
+
 - **Suggested scope:** global (`~/.claude/intent/pending/2026-07-22-outside-in-scope.md`)
 - **Evidence supports it?** Single-session (skills-dev/finishing:023ca2da). Fails the ≥2 project bar on evidence alone.
 - **Override justification present?** Yes. The report explicitly names it "a methodological rule about how the agent reasons about scope, not a skills-dev/finishing-specific choice" and adds a `**Single-project justification:**` line pointing to (a) methodological principle, (b) prevent-a-class-of-misreads shape, (c) reinforced by the agent's own retro insight ("Log-mining has survivorship bias"). The justification is on-format and load-bearing.
 - **Correct?** Yes. This is the strongest single-project override in the report — the rule is intrinsically about how the agent reasons, which is inherently cross-project. Would want the justification line to note that it's already partly captured in the existing global doctrine (the "Exhaust lookup first" doctrine and the "produce something concrete to react to" thesis), because outside-in-vs-inside-out is the same axis. That would sharpen the "why universal" claim rather than weaken it.
 
 ### Draft #3 — "Routing heuristic — constraints project-local, taste user-global"
+
 - **Suggested scope:** global (`~/.claude/intent/pending/2026-07-22-constraint-vs-taste-routing.md`)
 - **Evidence supports it?** Single-session (quoindroid:56f06a39) with one verbatim quote.
 - **Override justification present?** Yes, and it's explicit: "meta-rule about how ALL captured corrections should be routed, not a Quoin-specific choice." The report further claims the rule was "observably applied by the user across other 2026-07 sessions" and enumerates four instances (Firebase server-model global, targets human-visibility project-local, symmetric-enforcement global, mobile tabbed/segmented global).
 - **Correct?** Yes, with a caveat. The rule is inherently meta — it governs the routing of every future intent draft — so the promotion is defensible on shape alone. But the four-example reinforcement claim is a self-audit that the reviewer would want to cross-check against the actual existing `~/.claude/subfiles/intent.md` "Standing taste" section. Reading that file confirms three of the four listed reinforcements (mobile tabbed, Firebase server-model, symmetric enforcement all landed as user-global taste). Reinforcement claim holds up.
 
 ### Draft #4 — "When a workaround is blocked by the same class of bug, treat the bug as in-scope"
+
 - **Suggested scope:** global (`~/.claude/intent/pending/2026-07-22-workaround-blocked-scope.md`)
 - **Evidence supports it?** Single-session (fantastty:ecfb2b04). Fails ≥2 project bar on evidence alone.
 - **Override justification present?** Yes — but it's the thinnest of the three overrides: "identifies a specific and reproducible failure mode (workaround-recursion) that would recur in any environment with pre-existing bugs. Explicit statement of the problem shape makes it generalizable." That's a plausibility argument, not a demonstration of universality. Compare to Draft #2's "methodological rule" claim (backed by the shape of the rule itself) or Draft #3's "meta-rule that shapes every future intent draft" (backed by four reinforcement examples).
 - **Correct?** **Ambiguous — should be flagged, not silently resolved.** This rule could arguably be project-scoped to fantastty (or to any specific project encountering a bug-triage session) until a repeat surfaces in a second project. The "generic bug-scoping rule" framing is doing heavy lifting for a single instance where no comparable correction appeared in the other 17 sessions of the range. Per the report's own Draft #3 heuristic ("constraint project-local, taste global"), workaround-blocked-scope is much closer to a **constraint about bug triage** than to a taste/aesthetic preference — which would push it toward project-local pending an evidence repeat. **This is the report's most fragile scope call**, and by the spec's letter ("without that line, keep it project-scoped") the justification is present but comparatively weak.
 
 ### Draft #5 — "nanoclaw fork constraint — no upstream v2 merge"
+
 - **Suggested scope:** project nanoclaw (`/Users/dylanr/work/tools/nanoclaw/.intent/pending/2026-07-22-refuse-v2-upgrade.md`)
 - **Evidence supports it?** Yes. Explicit in-session verbatim ("nanoclaw has a whole new version 2 that I REFUSE to upgrade to"), repeated verbatim within the session, tied to a specific fork's architectural stance.
 - **Override justification present?** N/A — not overridden; single-project scope matches single-project evidence.
@@ -68,6 +73,7 @@ Also notable: the report cleanly handles the "already-captured" cases in the Not
 ## Final score: 7/10
 
 Justification:
+
 - **+3** Draft #1 is a textbook multi-project global promotion done right.
 - **+2** Drafts #2 and #3 carry explicit, load-bearing "why universal" lines that meet the spec's override bar.
 - **+1** Draft #5 is a clean single-project scope with correct target path.

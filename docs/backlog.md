@@ -4,6 +4,7 @@
 # Hindsight Backlog
 
 ## Companion PR: `/intent-pending materialize-from-report`
+
 Extend the `intent` plugin's `/intent-pending` skill with a
 `materialize-from-report <path>` command that reads a hindsight
 `intent-retro` report, parses the fenced draft blocks + `**Target path:**`

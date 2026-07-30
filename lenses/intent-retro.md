@@ -79,12 +79,12 @@ mark it project-scoped with `[watch for repeat]`.
 Emit each keeper as a fenced code block. On the line immediately above the
 fence, print `**Target path:** <path>` using the scope rule above. If the
 draft is a project-scoped keeper held back from global promotion pending
-cross-project evidence, append ` [watch for repeat]` to the target-path line.
+cross-project evidence, append `[watch for repeat]` to the target-path line.
 
 The fenced block must contain the intent plugin's draft format — the five
 base lines plus three lens-required fields, in this exact order:
 
-```
+```text
 # Proposed intent entry: <short title>
 **Proposed entry (Taste|Constraint|Preference):** <the rule, 1-2 sentences>
 **Why:** <the user's verbatim words + brief context>
@@ -105,7 +105,7 @@ only in the retro report.
 Immediately after the fenced block, print one `**Provenance:**` line listing
 the session IDs and verbatim quotes that back the draft:
 
-```
+```text
 **Provenance:** <session-id-shortform> — "<verbatim quote>"; <session-id> — "<verbatim quote>"
 ```
 
@@ -130,7 +130,7 @@ Check three sources for existing captures of each candidate keeper's rule:
 If any of those already captures the rule (or a near-duplicate), tag the
 draft with a line immediately after the provenance line:
 
-```
+```text
 [possibly already captured — check <path>]
 ```
 

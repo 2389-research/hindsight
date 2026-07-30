@@ -7,30 +7,35 @@
 ## Per-draft dedup audit
 
 ### 1. `verify-current-state`
+
 - **Semantic overlap with other keepers:** partial with (2) *outside-in-scope* — both concern "the mental model doesn't match reality" — but they're distinct: (1) is about **temporal drift** of artifacts (git pull, re-read code), (2) is about **survivorship bias** of evidence-mining. Different failure modes, different remedies. Keep separate.
 - **Overlap with existing pending drafts:** none. The three shipped drafts (SSH/branch/tmux) are unrelated.
 - **Overlap with global standing-taste:** partial with the doctrine's existing *"Exhaust lookup first"* under Question doctrine. The draft explicitly names this ("sharpens but doesn't replace") — good faith disclosure, well handled.
 - **Verdict:** clean. Cross-project provenance (4 sessions, 3 projects) is real and correctly consolidated as a single draft — a textbook example of proper Tier-1 merge.
 
 ### 2. `outside-in-scope`
+
 - **Semantic overlap with other keepers:** partial with (1) as noted above; disjoint from (3)/(4)/(5).
 - **Overlap with existing pending drafts:** none.
 - **Overlap with global standing-taste:** none. Adjacent to *"Evidence-Based: Make decisions based on actual usage patterns"* in the user CLAUDE.md, but the draft is the *counter-rule* (evidence is necessary but not sufficient), not a duplicate.
 - **Verdict:** clean.
 
 ### 3. `constraint-vs-taste-routing`
+
 - **Semantic overlap with other keepers:** none. This is a meta-rule about where the *other* drafts get filed.
 - **Overlap with existing pending drafts:** none.
 - **Overlap with global standing-taste:** none by rule, but this draft is the *governing rule for* the "Standing taste" section itself. Slight recursion risk — if adopted, it would formalize what has been implicit practice. Not a duplication, but a promotion.
 - **Verdict:** clean. Highest-leverage single-instance keeper.
 
 ### 4. `workaround-blocked-scope`
+
 - **Semantic overlap with other keepers:** none.
 - **Overlap with existing pending drafts:** none.
 - **Overlap with global standing-taste:** none.
 - **Verdict:** clean.
 
 ### 5. `nanoclaw-refuse-v2-upgrade`
+
 - **Semantic overlap with other keepers:** none (only project-scoped keeper).
 - **Overlap with existing pending drafts:** none.
 - **Overlap with global standing-taste:** none (correctly kept project-local per the routing rule in draft 3).
@@ -80,6 +85,7 @@ Additionally: the global standing-taste bullet added mid-range ("Mobile/compact 
 ## Final score: 8 / 10
 
 **Justification:**
+
 - **+4** for correct cross-project merging of the four "stale-mental-model" corrections into a single Tier-1 draft (this is the fragile discipline; the report nails it).
 - **+2** for complete and accurate already-captured list for the three shipped drafts (SSH/branch/tmux), with correct file paths verified against disk.
 - **+2** for correctly identifying overlaps with existing doctrine ("Exhaust lookup first") in-prose and framing new drafts as sharpening rather than duplicating.

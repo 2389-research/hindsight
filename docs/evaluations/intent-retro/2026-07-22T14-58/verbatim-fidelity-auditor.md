@@ -9,26 +9,30 @@ Each quote was verified first against the session summary at `/Users/dylanr/.cla
 ### Draft #1 — "Verify current state" (four quotes)
 
 **Q1.1 — block-friends: `08629465-f279-40a5-9dc9-901ad6c6045e`**
+
 - Claimed: `"I know that what we did didn't address it - but it's from a long ass time ago - we may have moved away from it, or we may have otherwise implemented differently."`
 - Summary line 42, 118 (matches).
 - Raw transcript line 3588 (matches, same punctuation including the two hyphen-space " - " separators and terminal period).
 - match=**yes** / severity=**none**
 
 **Q1.2 — quoindroid: `56f06a39-ca92-4d0b-8712-2b9f2938d509`**
+
 - Claimed: `"apprently quoincore should already work on linux - or something like that. can we look into what we already have and see if we can leverage it?"`
 - Summary line 94 (matches).
 - Raw transcript line 650 (matches; the misspelling "apprently" and lowercase "can" are preserved from the raw utterance).
 - match=**yes** / severity=**none**
 
 **Q1.3 — fantastty: `ecfb2b04-9bd1-4f26-96ff-7146b9b27cfc`**
+
 - Claimed: `"we need to pull latest back into what we have and see if there's anything left to what we're doing."`
-- Summary line 139: `"ok, we need to pull latest back into what we have and see if there's anything left to what we're doing."` (has leading `ok, `).
+- Summary line 139: `"ok, we need to pull latest back into what we have and see if there's anything left to what we're doing."` (has leading `ok,`).
 - Raw transcript line 8178 confirms the user's actual utterance was: `ok, we need to pull latest back into what we have and see if there's anything left to what we're doing.`
 - The report **silently dropped the leading `"ok, "`** with no `[...]` elision marker.
 - Note: the same summary contains a *second, shorter* variant of this quote at line 38 (`"we need to pull latest back into what we have and see if there's anything left."`) — a summary-internal drift. The report's version is neither the raw utterance nor the shorter summary paraphrase; it's a third variant that borrows the raw ending but drops the raw's leading word.
 - match=**drift** / severity=**minor** (single leading discourse marker dropped; meaning intact; but violates verbatim rule and shows the mining pipeline is comfortable trimming quote edges without marking)
 
 **Q1.4 — fantastty: `ecfb2b04-9bd1-4f26-96ff-7146b9b27cfc`**
+
 - Claimed: `"I got the latest, and this is already handled in there."`
 - Summary line 97, 3229 (matches).
 - Raw transcript line 2048 (matches exactly; capitalization and terminal period preserved).
@@ -37,6 +41,7 @@ Each quote was verified first against the session summary at `/Users/dylanr/.cla
 ### Draft #2 — "Never let evidence-mining alone define scope"
 
 **Q2 — skills-dev/finishing: `023ca2da-a54f-434b-ad9b-a8e7fdb0b75a`**
+
 - Claimed: `"I think I'm worried about all the other things we are forgetting about (security review, user review, compliance? etc, etc) we have very little deployment, what does that look like, etc"`
 - Summary line 122 (matches).
 - Raw transcript line 1154 (matches exactly — parenthesization, "?" after "compliance", double "etc, etc", and no terminal period all preserved).
@@ -46,6 +51,7 @@ Each quote was verified first against the session summary at `/Users/dylanr/.cla
 ### Draft #3 — "Routing heuristic"
 
 **Q3 — quoindroid: `56f06a39-ca92-4d0b-8712-2b9f2938d509`**
+
 - Claimed: `"so... I think that the constraint might make sense in Quoin's INTENT.md, but the taste one feels like a user level INTENT thing."`
 - Summary line 118 (matches).
 - Raw transcript line 1833 (matches exactly — ellipsis `"so..."`, capitalization, terminal period all preserved).
@@ -54,6 +60,7 @@ Each quote was verified first against the session summary at `/Users/dylanr/.cla
 ### Draft #4 — "Workaround-blocked-by-same-bug"
 
 **Q4 — fantastty: `ecfb2b04-9bd1-4f26-96ff-7146b9b27cfc`**
+
 - Claimed: `"the settings window is not sizeable, and I can not make the terminal window any bigger. I also can not actually test this without being able to see the stuff."`
 - Summary line 109, 5921 (matches).
 - Raw transcript line 4378 (matches exactly — lowercase "the", split into two sentences, "I can not" as two words twice, terminal period).
@@ -62,6 +69,7 @@ Each quote was verified first against the session summary at `/Users/dylanr/.cla
 ### Draft #5 — "nanoclaw fork constraint"
 
 **Q5 — nanoclaw: `4ed30f27-34fa-4ca1-af4a-062ad5e4e65e`**
+
 - Claimed: `"nanoclaw has a whole new version 2 that I REFUSE to upgrade to."` (with claim of in-session verbatim repeat 3h later)
 - Summary line 81 (matches). Summary line 118 confirms the repeat.
 - Raw transcript: appears at line 41 AND line 371, **byte-identical both times** — genuine verbatim in-session repeat is real, and the caps-lock "REFUSE" is preserved from the user's actual keystrokes.
@@ -71,6 +79,7 @@ Each quote was verified first against the session summary at `/Users/dylanr/.cla
 ## Session-date & attribution check
 
 All five cited sessions have `started_at` inside 2026-07-01..2026-07-21:
+
 - `08629465` — 2026-07-01 18:46:20 (block-friends)
 - `023ca2da` — 2026-07-02 19:55:01 (skills-dev/finishing)
 - `ecfb2b04` — 2026-07-03 15:08:24 (fantastty)
@@ -95,6 +104,7 @@ Project labels in the report match the summaries' project attribution. No compos
 ## Final score: 8/10
 
 Justification:
+
 - **+5** floor: 7/8 quotes verify character-for-character against both summary and raw transcript. Preserved: the "apprently" misspelling, the lowercase-"can" continuation, the double "etc, etc" with parenthesized "?", the caps-lock "REFUSE", the split-sentence "I can not" (two words), the `"so..."` ellipsis, the two-hyphen " - " separator style. That is high-fidelity mining discipline.
 - **+2** for the nanoclaw in-session verbatim repeat being genuinely verbatim (byte-identical at line 41 and line 371), which validates one of the report's strongest durability signals.
 - **+1** for correct session-date range compliance and correct project attribution across all five cited sessions.

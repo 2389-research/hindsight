@@ -48,6 +48,7 @@ The report is doing the right ritual here. Draft 4 is where I'd push back in tri
 ### 4. Borderline candidates called out honestly, not padded through
 
 The report earns real credit here. It could have padded with:
+
 - "External OSS = smaller PRs, hands-on user review" (fantastty explicit user statement) — but correctly noted at line 103 as "refinement of existing reversibility-floor doctrine — not novel enough."
 - "Visual affordance > textual annotation" (fantastty) — parked at line 101 as single UI-taste instance.
 - "PR thematic coherence" (fantastty) — parked at line 100 with reason.
@@ -101,6 +102,7 @@ None of this waste is severe. It doesn't dilute the drafts themselves.
 ## Final score: 8/10
 
 **Justification:**
+
 - Discard discipline held (~10% keep rate) → +
 - Cross-project repeat draft (1) is textbook durable → +
 - Meta-rule draft (3) is high-leverage and honestly justified as single-instance → +

@@ -19,31 +19,37 @@ Lens version: 1
 ## Cross-persona themes (2+ judges converged)
 
 ### T1 — Draft #4 (workaround-blocked) is the weakest keeper
+
 - **Judges:** Durability, Scope-Attribution, Dedup (implicit)
 - **Signal:** Durability calls it "probation-accept, drop if no cross-project repeat in 4-6 weeks." Scope calls it "soft override, most fragile scope call — the rule's own category (constraint) argues against global scope by Draft #3's own heuristic." Dedup marks it clean but low-evidence.
 - **Convergent recommendation:** Either downgrade Draft #4 to project-scoped (fantastty) with a "watch for repeat" tag, OR strengthen the universality justification by tying it to an existing global rule (reversibility floor / smallest reasonable changes). Silent-global-with-plausibility-argument is the report's most fragile scope call.
 
 ### T2 — Sort order violates the lens spec
+
 - **Judges:** Dedup (explicit table), Triage-Consumer (by leverage)
 - **Signal:** Spec order is Tier-1 (≥2 projects) → Tier-2 (within-project repeats) → Tier-3 (single-instance). Actual order is 1, 2, 3, 4, 5 which puts Tier-3 drafts (#2, #3, #4) *before* the Tier-2 draft (#5, nanoclaw with in-session verbatim repeat). Triage-Consumer separately argues Draft #3 should lead by leverage.
 - **Convergent recommendation:** Either add explicit `## Tier 1 / ## Tier 2 / ## Tier 3` headings AND resort, or drop tiers entirely and sort by leverage (meta-rules first).
 
 ### T3 — Notes section is triage-time waste
+
 - **Judges:** Durability, Triage-Consumer, Verbatim-Fidelity
 - **Signal:** "Range compliance," "Also captured elsewhere," "Next: Materialize" all land as proof-of-work rather than actionable queue items. Triage-Consumer wants them in a `<details>` block or footer; Durability calls out the same lines as waste; Verbatim-Fidelity flags "Range compliance" self-attestation as worth exactly the cost of the ink.
 - **Convergent recommendation:** Move rigor/audit trails into a companion notes file or collapsed appendix; keep only actionable content (drafts + already-captured list + discards) in the main body.
 
 ### T4 — On-draft leverage/repeat tagging missing
+
 - **Judges:** Durability, Triage-Consumer, Dedup
 - **Signal:** The lens spec calls repeat "the strongest durability signal available" but drafts don't surface it inline. Durability wants a `Repeat: yes/no` on the draft face. Triage-Consumer wants `[reinforced-4x]` `[meta-rule]` `[verbatim-repeat]` inline tags. Dedup wants tier labels visible.
 - **Convergent recommendation:** Add a one-line tag inside each fenced draft body — e.g., `**Durability signal:** repeated across 4 projects` / `**Durability signal:** verbatim in-session repeat, hardline language` / `**Durability signal:** single-instance meta-rule (governs all future intent capture)`. This lets the tag travel with the pending file into `/intent-pending` triage rather than living in the retro's justification prose.
 
 ### T5 — Cross-reference to existing doctrine is inconsistent
+
 - **Judges:** Triage-Consumer, Scope-Attribution
 - **Signal:** Draft #1 explicitly notes "sharpens but doesn't replace 'exhaust lookup first' doctrine" — Triage-Consumer calls this "the model." Drafts #2, #3, #4 don't cross-reference. Scope specifically wants Draft #2 tied to the "Exhaust lookup first" doctrine to strengthen the "why universal" claim.
 - **Convergent recommendation:** Every keeper should include a one-line "adjacent doctrine" or "extends X" reference where applicable, or an explicit "no overlap found" note.
 
 ### T6 — Single-project justification block placement
+
 - **Judges:** Durability, Triage-Consumer
 - **Signal:** The `**Single-project justification:**` block lives *after* the fenced draft body, not inside it. Durability: "will not travel with the file." Triage-Consumer: "3-line paragraph after the fenced block adds tax; would prefer one-line inline tag."
 - **Convergent recommendation:** Move the justification INTO the fenced block (as a `**Single-project justification:** <one line>` field parallel to `**Why:**`), so the pending .md file arrives at `/intent-pending` already carrying the durability argument.
@@ -51,31 +57,37 @@ Lens version: 1
 ## Single-judge findings worth surfacing
 
 ### F1 — Draft #1 Q1.3 verbatim drift ("ok, " dropped)
+
 - **Judge:** Verbatim-Fidelity only
 - **Severity:** Minor but real; violates the lens's load-bearing doctrine of strict verbatim.
 - **Fix:** Update Draft #1's `Why:` block to include the correct opening `"ok, we need to pull latest back into what we have and see if there's anything left to what we're doing."` on the fantastty line. Update the provenance line at the bottom of the draft the same way.
 
 ### F2 — Missing already-captured flag for finishing-memory
+
 - **Judge:** Dedup only
 - **Severity:** Medium — highest re-materialization risk in the corpus. skills-dev/finishing's "installable single-artifact" preference and "file-drop extensibility" are tagged durable+global-scope in the underlying summary but sit in `~/.claude/projects/…/memory/feedback_installable_artifacts.md` rather than in `.intent/pending/`, so a future intent-retro could re-mine them.
 - **Fix:** Promote the "Also captured elsewhere" mention into the primary `## Notes → Already captured` list with a `[possibly already captured — see finishing memory]` framing.
 
 ### F3 — `~/.claude/intent/pending/` directory does not exist
+
 - **Judge:** Dedup only
 - **Severity:** Operational — Drafts #1-4 target this path but the directory is not on disk.
 - **Fix:** Add to `## Next: Materialize` — "note: `~/.claude/intent/pending/` will need to be created (`mkdir -p`) before materialization."
 
 ### F4 — Missing transcript-line references
+
 - **Judge:** Verbatim-Fidelity only
 - **Severity:** Low, but would make provenance auditing seconds-fast instead of minutes-slow. This is an upstream ask (extraction prompt / summary schema).
 
 ### F5 — Draft 5's nanoclaw "3h later" temporal claim not verifiable from summary
+
 - **Judge:** Verbatim-Fidelity only
 - **Severity:** Low. Consistent with the summary's user-turn count between instances but not directly timestamped.
 
 ## Layer diagnosis
 
 ### Lens-level (this skill can fix — Analysis Instructions, Layer 4)
+
 - **T1** (Draft #4 downgrade OR strengthen): tighten the "override justification" requirement — spec should say override lines must either (a) cite ≥2 projects of reinforcement, (b) be intrinsically meta/methodological, or (c) tie explicitly to an existing global rule. Draft #4 fits none of these.
 - **T2** (sort order): add `## Tier 1 / ## Tier 2 / ## Tier 3` headings requirement OR replace tier-sort with leverage-sort with explicit ordering rule.
 - **T3** (notes waste): specify what belongs in main body vs collapsed appendix. Current spec doesn't distinguish.
@@ -85,16 +97,19 @@ Lens version: 1
 - **F2** (finishing-memory dedup): add a specific "check the project-memory system for adjacent captures" step to the analysis instructions.
 
 ### Report-level (fix this run before materializing)
+
 - **F1** (Q1.3 verbatim drift): correct the fantastty "ok, " drop in the current report before running `/intent-pending materialize-from-report`.
 - **F3** (missing global pending dir): note the `mkdir -p` step in the current report.
 
 ### Upstream (flag, don't fix here)
+
 - **F4** (transcript-line references): would require Layer 2 (extraction prompt) or Layer 1 (session-summary schema) change to capture transcript line numbers. Non-trivial; file for the base-schema backlog.
 - **Summary-internal drift on Q1.3** (Verbatim-Fidelity flagged that the fantastty summary itself contained two variant truncations of the same quote): Layer 2 issue — extraction prompt should enforce a single canonical verbatim per correction. Non-trivial; flag but don't fix here.
 
 ## Recommended next actions
 
 **Immediate (this run):**
+
 1. Fix Draft #1's Q1.3 provenance quote — restore the leading `"ok, "`.
 2. Add `mkdir -p ~/.claude/intent/pending` to the Materialize section.
 3. Decide Draft #4: downgrade to fantastty-project scope OR add a stronger universality justification. Recommended: downgrade + `[watch for repeat]`.

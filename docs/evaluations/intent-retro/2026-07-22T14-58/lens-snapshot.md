@@ -62,7 +62,7 @@ fence, print `**Target path:** <path>` using the scope rule above.
 The fenced block must contain the intent plugin's exact draft format —
 five lines, in this order, no additions:
 
-```
+```text
 # Proposed intent entry: <short title>
 **Proposed entry (Taste|Constraints|Preference):** <the rule, 1-2 sentences>
 **Why:** <the user's verbatim words + session ref>
@@ -78,7 +78,7 @@ five lines by prefix.
 Immediately after the fenced block, print one `**Provenance:**` line listing
 the session IDs and verbatim quotes that back the draft:
 
-```
+```text
 **Provenance:** <session-id> — "<verbatim quote>"; <session-id> — "<verbatim quote>"
 ```
 
@@ -91,7 +91,7 @@ If any session in the range touched an `INTENT.md` file (read or edit), and
 the captured diff overlaps a draft's rule, tag that draft with a line
 immediately after the provenance line:
 
-```
+```text
 [possibly already captured — check <path>]
 ```
 

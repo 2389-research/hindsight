@@ -7,30 +7,35 @@
 ## Per-draft triage simulation
 
 ### Draft 1 — Verify current state before triaging stale artifacts
+
 - **Action:** Accept
 - **Time:** ~20s
 - **Stalled?** No
 - **Why:** The title is a full imperative sentence, the "Why" has four verbatim quotes across four unrelated projects (that's the strongest possible durability signal), and "How to apply" gives me three concrete steps I can imagine executing tomorrow. The final sentence — "This sharpens but doesn't replace the existing 'exhaust lookup first' doctrine" — is exactly the kind of cross-reference that lets me accept without worrying about duplication. This is the model draft.
 
 ### Draft 2 — Never let evidence-mining alone define scope
+
 - **Action:** Edit-and-accept, but I stalled
 - **Time:** ~45s (over budget)
 - **Stalled?** Yes — on the "Single-project justification" block. I had to re-read to understand this was single-instance, then evaluate whether the (a)/(b)/(c) reasoning was strong enough. That's cognitive load the format is asking me to carry.
 - **Why:** The rule is real and I'd keep it, but the title is 12 words and reads more like a paper abstract than a preference. The "Why" runs one giant paragraph without any visual breaks. Could I confidently accept it in 30s? Only because I remember the finishing session. A cold read would take longer.
 
 ### Draft 3 — Routing heuristic (constraints project-local, taste user-global)
+
 - **Action:** Accept immediately
 - **Time:** ~15s
 - **Stalled?** No
 - **Why:** Highest-leverage draft in the file — it's a meta-rule about how the retro itself routes every future draft. The justification enumerates four in-flight examples ("Firebase server-model landed global; targets human-visibility rule landed project-local…") which pre-empts the "is this real?" question. This should have been draft #1 by order of leverage.
 
 ### Draft 4 — Workaround blocked by same class of bug
+
 - **Action:** Edit-and-accept (would tighten the title)
 - **Time:** ~30s (right at budget)
 - **Stalled?** Slightly — the title is a mouthful; I had to read the "Why" before I understood what "workaround-blocked-by-same-class" means
 - **Why:** The verbatim quote (settings-window-not-sizeable) is vivid and the pattern is clear once you read it. But the concept doesn't land from the title alone — I need the example. On a cold triage pass, I'd probably accept with a shorter title like "If the workaround hits the same bug, the bug is in scope."
 
 ### Draft 5 — nanoclaw fork constraint
+
 - **Action:** Accept
 - **Time:** ~25s
 - **Stalled?** No
