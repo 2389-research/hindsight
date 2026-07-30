@@ -32,7 +32,7 @@ underneath. Prefer the debugging journey over the trophy.
 Each long-form item is a lightweight pitch — just enough to decide whether
 to pursue it. If the idea moves forward, everything gets relitigated anyway.
 
-```
+```text
 ### [Suggested Title]
 [One-line pitch — the idea in a single sentence]
 
@@ -67,6 +67,7 @@ Name which long-form or short-form items it connects.
 ## Extraction Hints
 
 When summarizing each session, also capture:
+
 - Debugging stories with non-obvious root causes
 - "Aha" moments where a surprising approach worked
 - Before/after metrics (performance, line count, test count, time saved)

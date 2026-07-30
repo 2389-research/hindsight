@@ -18,6 +18,7 @@ This is not an agent performance review. This is a forensic investigation into
 why the human had to be present at all.
 
 The only human messages that survive scrutiny are those where:
+
 1. The human is providing information that exists nowhere the agent can access, AND
 2. There is no system change that could make that information accessible, AND
 3. The cost of the agent guessing wrong is irreversible
@@ -39,6 +40,7 @@ sessions, perform an autopsy:
 |---|---------|--------------------------------------|------------|----------|-----------------|-------------|
 
 **Root Cause categories** — every message has exactly one:
+
 - `missing-memory`: Agent doesn't remember a user preference it's been told before (e.g., "use pnpm"). Fix: persistent memory.
 - `missing-context`: Agent didn't read available files/config (e.g., Tailwind config in project root). Fix: pre-task context loading.
 - `permission-seeking`: Agent asked for approval on a reversible action. Fix: act first, report after.
@@ -53,6 +55,7 @@ sessions, perform an autopsy:
 - `irreducible`: Genuinely cannot be eliminated. Explain why in detail. This should be RARE — 1-3 per day maximum.
 
 **Fix Type categories:**
+
 - `memory`: Write to persistent memory so the agent never asks again
 - `config`: Add to CLAUDE.md or project config
 - `skill`: Build a skill or hook that fires automatically
@@ -74,12 +77,14 @@ accessible AND guessing wrong would be irreversible.
 ## The Compounding Tax
 
 Every unnecessary human message has two costs:
+
 1. **Direct cost**: The time to read, think, type, and context-switch
 2. **Compounding cost**: Each intervention trains the human to intervene more and
    the agent to wait for approval more. This is a feedback loop that gets worse
    over time.
 
 For each root cause category with 3+ instances, estimate:
+
 - Direct time cost across the day
 - How this pattern changes human behavior in future sessions (e.g., "after 3
   Tailwind violations, the human now supervises all CSS work — estimated 10-15
@@ -96,6 +101,7 @@ The goal is to make the cost of inaction viscerally clear.
 This section is addressed directly to the human. It should be blunt.
 
 For each human behavior pattern that generates unnecessary messages:
+
 - **The behavior**: What the human does (e.g., "confirms every push to a feature branch")
 - **Why it's unnecessary**: What makes this safe to stop
 - **What to do instead**: The replacement behavior, if any (e.g., "review the PR at the end instead of confirming each push")
@@ -114,6 +120,7 @@ That's rational. The fix is on the agent's side first."
 ## What the Agent Must Fix
 
 For each agent behavior that caused human messages:
+
 - **The behavior**: What the agent did wrong
 - **Instance count**: How many times across how many sessions
 - **Root cause**: Why the agent does this (permission-seeking trained by RLHF?
@@ -130,6 +137,7 @@ For each agent behavior that caused human messages:
 
 Name all psychological patterns. Every pattern needs a name because names
 make them detectable. Look for at least:
+
 - **Approval addiction**: asking permission for reversible actions
 - **Complexity signaling**: sophisticated approaches to demonstrate effort
 - **Completion theater**: "anything else?" exchanges with zero information
@@ -147,33 +155,43 @@ make them detectable. Look for at least:
 For each root cause category, propose a concrete elimination plan:
 
 ### Memory Gaps (missing-memory, cross-session-learning-failure)
+
 List every preference or pattern that should be persisted. Be specific:
+
 - What to remember (e.g., "user's package manager is pnpm")
 - Where to store it (persistent memory, CLAUDE.md, project config)
 - How to surface it (pre-task context loading, session-start routine)
 
 ### Context Failures (missing-context, correction-not-retained)
+
 List every instance where information was available but not used:
+
 - What file/config contained the answer
 - Why the agent didn't read it
 - What trigger should cause the agent to read it in the future
 
 ### Permission-Seeking (permission-seeking, completion-theater, trust-deficit)
+
 For each type of unnecessary question the agent asked:
+
 - The question pattern
 - Why it's unnecessary (reversibility analysis)
 - The replacement behavior ("just do it and report")
 - For trust-deficit: what the agent must do first to earn trust
 
 ### Skill Gaps (missing-skill)
+
 For each capability the agent lacked:
+
 - What the skill would do
 - What triggers it
 - Build vs. buy assessment
 - Priority (based on message count it would eliminate)
 
 ### Inference Failures (missing-inference, complexity-over-simplicity)
+
 For each case where the agent had signals but didn't connect them:
+
 - What signals were available
 - What conclusion they pointed to
 - What protocol would ensure the agent connects them next time
@@ -181,6 +199,7 @@ For each case where the agent had signals but didn't connect them:
 ## Zero-Message Targets
 
 For each session, state:
+
 - **Current message count**: exact number
 - **Target**: the number of messages with all proposed fixes applied. This
   MUST be the true minimum — do not add padding. If your elimination plan
@@ -200,6 +219,7 @@ the agent has no way to infer. That's usually 1-3 messages per session.
 ## Regression Ratchet
 
 For each target:
+
 - **Trigger**: target + 1 message. Not target + 50%. Target + 1.
 - **Action**: investigate which fix failed and why
 - **Escalation**: if the same regression occurs in 2 consecutive sessions,
@@ -217,6 +237,7 @@ fixes as commits — say so, and propose the mechanism.
 ## Extraction Hints
 
 When summarizing each session, capture:
+
 - **Every human message**: exact quote or close paraphrase. Classify as
   decision, confirmation, information, correction, praise, or zero-content.
 - **Every agent permission-seeking message**: exact quote or close paraphrase.

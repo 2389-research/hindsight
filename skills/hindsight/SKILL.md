@@ -18,6 +18,7 @@ The LLM interprets the input to determine two things:
 2. **Lens** — what kind of analysis to produce
 
 **Examples of valid input:**
+
 - `yesterday standup`
 - `what knowledge can we extract from last week's sessions?`
 - `summarize what happened today`
@@ -30,9 +31,11 @@ Structured formats like `yesterday standup` still work — the skill handles bot
 ## Prerequisites
 
 1. **ccvault** must be installed and synced. Verify by running:
+
    ```bash
    ccvault orient --json 2>/dev/null | head -1
    ```
+
    If this fails, tell the user to install ccvault (`brew install 2389-research/tap/ccvault`)
    and run `ccvault sync` first.
 
@@ -41,9 +44,11 @@ Structured formats like `yesterday standup` still work — the skill handles bot
    to read session data. If MCP tools are not available, fall back to the ccvault CLI.
 
 3. **User directories** must exist at `~/.claude/hindsight/`. If they don't, run:
+
    ```bash
    bash <plugin-root>/scripts/install.sh
    ```
+
    Where `<plugin-root>` is determined by taking the skill base directory shown in the
    loading message above and going up two levels.
 
@@ -59,6 +64,7 @@ Interpret the user's input to extract a date range. Resolve to start and end dat
 (YYYY-MM-DD format). Use the Bash tool with `date` command for date math.
 
 Common patterns:
+
 - "today" / "yesterday" / "last week" / "last month" / "last N days"
 - "this past week" / "since Monday" / "March 1st through 5th"
 - Explicit formats like `2026-03-23` or `2026-03-01:2026-03-05`
@@ -68,6 +74,7 @@ If the date range is ambiguous, ask the user to clarify.
 **Step 2: Determine lens**
 
 Read the available lenses from both locations (list both directories):
+
 - `~/.claude/hindsight/lenses/` (user/built-in lenses)
 - `<project-root>/.claude/hindsight/lenses/` (project-scoped lenses)
 
@@ -96,6 +103,7 @@ Call `list_sessions` and filter results by date range. If a project filter is re
 (from the user's input), include it.
 
 **Via CLI (fallback):**
+
 ```bash
 ccvault list-sessions --after <start-date> --before <end-date> --json
 ```
@@ -143,6 +151,7 @@ for a single day, `2026-03-20_to_2026-03-23` for a range).
 **Constructing the subagent prompt:**
 
 For each session, construct the subagent prompt by combining:
+
 1. The extraction prompt from `<plugin-root>/skills/shared/extraction-prompt.md` (read it once and reuse)
 2. The session summary schema from `<plugin-root>/skills/shared/session-summary-schema.md` (read it once and reuse)
 3. If the lens has extraction hints, replace `{LENS_EXTRACTION_HINTS}` in the extraction prompt with those hints. If no hints, replace with empty string.
@@ -152,7 +161,7 @@ For each session, construct the subagent prompt by combining:
 
 The subagent prompt should be structured as:
 
-```
+```text
 You are a session extraction agent. Your job is to read a Claude Code session
 via ccvault's MCP tools and produce a standardized summary.
 
@@ -202,11 +211,13 @@ After writing, respond with just the file path to confirm completion.
 ```
 
 **Batching:**
+
 - Dispatch subagents in parallel batches of up to 5
 - Wait for each batch to complete before starting the next
 - Report progress: "Summarized N/M sessions..."
 
 **Error handling:**
+
 - If a subagent fails, log the error and continue with remaining sessions
 - Include a note in the final report about any failed extractions
 

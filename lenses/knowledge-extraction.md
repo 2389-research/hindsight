@@ -28,6 +28,7 @@ Each learning should be a prescriptive rule, not just an observation. Frame as
 "do X" or "don't do Y" rather than "we discovered that Z."
 
 For each learning:
+
 - **The rule**: What to do or avoid, stated directly
 - **Why**: The failure mode, symptom, or rationale — what goes wrong if ignored
 - **Audience**: short, vibes-based — who needs to know this?
@@ -41,12 +42,14 @@ Group by technology domain. Order by frequency (common first).
 ## Architectural Patterns
 
 ### Patterns Worth Reusing
+
 - What the pattern is and when to reach for it
 - Why it works (the trade-off it resolves)
 - When NOT to use it (boundary conditions)
 - **Audience**: who benefits from knowing this?
 
 ### Anti-Patterns
+
 - What it looks like (the symptom you'd notice)
 - How to detect it — what test, log, or command reveals the problem
 - Why it's wrong (the mechanism, not just "it's bad")
@@ -59,6 +62,7 @@ Debugging techniques worth documenting — the *how I figured it out* path, not
 just the fix. Only include techniques that transfer across projects.
 
 For each:
+
 - **Symptom**: What you'd observe
 - **Diagnostic steps**: The commands, logs, or checks that led to root cause
 - **Resolution**: What fixed it
@@ -85,6 +89,7 @@ Omit this section if nothing noteworthy emerged.
 ## Extraction Hints
 
 When summarizing each session, also capture:
+
 - Debugging stories: not just the fix, but how the root cause was identified —
   what commands, logs, or tools led to the diagnosis
 - Edge cases and their solutions

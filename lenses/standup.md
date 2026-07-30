@@ -40,13 +40,14 @@ on first mention — e.g., "Reimported 40 Goodreads posts with corrected
 data from upstream PostKeeper fix".
 
 ## Date Range
+
 State the date range covered at the top of the report.
 
 ## Per-Project Block
 
 Each project block has this structure:
 
-```
+```text
 ## project-name — description ([org/repo](url))
 Status: On track
 
@@ -57,6 +58,7 @@ Status: On track
 ```
 
 **Status line rules:**
+
 - Use plain text for healthy status: `Status: On track`
 - Use **bold** for anything that needs attention: `**Status: Blocked — reason**`
   or `**Status: At risk — reason**`
@@ -79,6 +81,7 @@ on-track projects. Within each group, order by volume of activity.
 ## Extraction Hints
 
 When reading each session, also capture:
+
 - **Repository URL**: If the session references a git remote, org/repo path, or
   GitHub URL, include it in the summary metadata so the report can link to it.
 - **Collaboration context**: Note whether work appears solo or collaborative

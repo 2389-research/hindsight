@@ -4,7 +4,7 @@
 
 If you discover a security vulnerability in hindsight, please report it privately to:
 
-**security@2389.ai**
+**<security@2389.ai>**
 
 Please do not report security vulnerabilities through public GitHub issues.
 
