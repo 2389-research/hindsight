@@ -16,7 +16,7 @@ You do not need to understand hindsight's internals to use it. Invoke the skill 
 
 ### Project Structure
 
-```
+```text
 hindsight/
 ├── .claude-plugin/
 │   ├── plugin.json              # Plugin identity (name, version, skill path)
@@ -61,7 +61,7 @@ Claude Code plugins are defined by `.claude-plugin/plugin.json`, which points to
 The pipeline has four layers. Know which layer you're modifying:
 
 | Layer | File | What It Controls |
-|-------|------|-----------------|
+| ------- | ------ | ----------------- |
 | 1 | `skills/shared/session-summary-schema.md` | Fields in every session summary |
 | 2 | `skills/shared/extraction-prompt.md` | How subagents read sessions via ccvault |
 | 3 | Lens `## Extraction Hints` | Extra data a specific lens needs per-session |
@@ -91,7 +91,7 @@ Do not attempt to read session JSONL files directly. Always go through ccvault.
 ### Where to Modify What
 
 | I want to... | Modify |
-|--------------|--------|
+| -------------- | -------- |
 | Change what data every summary contains | `skills/shared/session-summary-schema.md` (layer 1) |
 | Change how subagents read sessions | `skills/shared/extraction-prompt.md` (layer 2) |
 | Add a new default lens | `lenses/<name>.md` + `scripts/install.sh` |

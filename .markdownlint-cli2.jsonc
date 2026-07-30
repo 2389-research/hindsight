@@ -1,0 +1,17 @@
+// Config for markdownlint-cli2. See https://github.com/DavidAnson/markdownlint-cli2#configuration
+{
+  "config": {
+    "default": true,
+    "MD003": { "style": "atx" },
+    "MD013": false,
+    "MD024": { "siblings_only": true },
+    "MD033": false,
+    "MD036": false,
+    "MD041": false,
+    "MD046": false,
+    "MD060": false
+  },
+  // Recognize the repo's ABOUTME-comments-then-YAML-frontmatter block as frontmatter,
+  // so lint rules don't misinterpret the `---` delimiters as HR/setext-heading markers.
+  "frontMatter": "^(?:<!--[\\s\\S]*?-->\\s*\\n)*\\s*---[\\s\\S]*?\\n---\\s*\\n"
+}

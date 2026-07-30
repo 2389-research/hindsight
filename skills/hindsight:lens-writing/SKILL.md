@@ -28,7 +28,7 @@ If intent is ambiguous, use AskUserQuestion to ask which mode.
 The hindsight pipeline has four layers. This skill only modifies layers 3 and 4:
 
 | Layer | What It Controls | This Skill |
-|-------|-----------------|------------|
+| ------- | ----------------- | ------------ |
 | 1. Base Schema (`skills/shared/session-summary-schema.md`) | What every summary always contains | Read-only |
 | 2. Extraction Prompt (`skills/shared/extraction-prompt.md`) | How subagents read sessions and write summaries | Read-only |
 | 3. Extraction Hints (`lenses/<name>.md § Extraction Hints`) | Extra per-session data for this lens | **Read/Write** |
@@ -118,6 +118,7 @@ Use AskUserQuestion with multiple choice where possible.
 Generate a complete lens file following the Lens File Format above.
 
 Before writing:
+
 - Present the draft to the user for review
 - Explain what goes in Analysis Instructions vs Extraction Hints
 - If the lens needs signals not in the base schema, put them in Extraction Hints
@@ -125,6 +126,7 @@ Before writing:
   may be unnecessary
 
 Ask the user where to write the lens via AskUserQuestion:
+
 - **User lens** (`~/.claude/hindsight/lenses/`): available across all projects
 - **Project lens** (`<project-root>/.claude/hindsight/lenses/`): scoped to this repo
 
@@ -141,6 +143,7 @@ Write to the chosen location.
 ### Step 4: GREEN — Refine
 
 For each lens-level finding from the evaluation:
+
 - Propose a specific change to the lens file (hints or analysis instructions)
 - Explain which layer the change targets and why
 
@@ -157,6 +160,7 @@ issues and tighten the lens.
 ### Step 1: Identify What to Evaluate
 
 Determine:
+
 - **Which lens?** Detect from user intent or ask via AskUserQuestion.
 - **Existing output?** Check `~/.claude/hindsight/reports/` for recent output
   from this lens. If found, ask user whether to use existing output or run fresh.
@@ -194,6 +198,7 @@ but avoid clustering:
 ### Persona Format
 
 Each persona has:
+
 - **Name**: short and evocative ("The Busy EM", "The Incident Responder")
 - **Role**: 1-2 sentence description of who they are
 - **Cares about**: 3-5 bullet evaluation criteria specific to their perspective
@@ -202,6 +207,7 @@ Each persona has:
 ### User Confirmation
 
 Present the 5 personas via AskUserQuestion (multi-select). The user can:
+
 - Keep all 5 (most common)
 - Deselect personas to remove them
 - Select "Other" to describe a custom persona to add or swap
@@ -275,6 +281,7 @@ Once all judges return, read all 5 evaluations and produce a synthesis:
 **Cross-persona themes:** Findings mentioned by 2+ judges
 
 **Layer diagnosis:** For each finding, categorize as:
+
 - **Lens-level** (this skill can fix): analysis instructions or extraction hints
 - **Upstream** (flag, don't fix): base schema or extraction prompt
 

@@ -14,7 +14,7 @@ All sections are required unless marked optional.
 ### Metadata (Required)
 
 | Field | Description |
-|-------|-------------|
+| ------- | ------------- |
 | Session ID | UUID from the JSONL filename |
 | Session Slug | Human-readable name from system entries (if available) |
 | Project | Project name |
@@ -30,6 +30,7 @@ All sections are required unless marked optional.
 ### What Happened (Required)
 
 Comprehensive narrative of the session, scaled to its length and complexity:
+
 - **Short sessions** (< 10 human turns): 2-4 sentences
 - **Medium sessions** (10-30 human turns): 1-2 paragraphs
 - **Long sessions** (30+ human turns): Structured with sub-headings for major phases
@@ -39,6 +40,7 @@ Captures the arc: what initiated the session, key milestones, direction changes,
 ### Key Activities (Required)
 
 Bulleted list of concrete accomplishments:
+
 - Features built
 - Bugs fixed
 - Files created or significantly modified
@@ -65,6 +67,7 @@ Include error messages or failure modes if relevant.
 ### Learnings & Insights (Optional)
 
 Things discovered during the session:
+
 - New patterns or techniques
 - Surprising behavior or edge cases
 - Reusable knowledge

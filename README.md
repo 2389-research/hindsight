@@ -53,7 +53,7 @@ Removes `~/.claude/hindsight/` (lenses, reports, evaluations) after confirmation
 
 **Interactive** (inside Claude Code):
 
-```
+```text
 /hindsight today standup
 /hindsight yesterday knowledge-extraction
 /hindsight last-week workflow-optimization
@@ -69,7 +69,7 @@ claude -p "use hindsight for last week with the knowledge-extraction lens"
 
 **Natural language** works too:
 
-```
+```text
 /hindsight what did I work on this past week?
 /hindsight summarize yesterday
 /hindsight what knowledge can we extract from the last 3 days?
@@ -80,7 +80,7 @@ If no lens is specified, hindsight defaults to `standup`. If input is ambiguous,
 ## Built-in Lenses
 
 | Lens | Description |
-|------|-------------|
+| ------ | ------------- |
 | `standup` | Daily standup summary — what was done, what's next, blockers. Groups by project. |
 | `knowledge-extraction` | Extract reusable learnings, patterns, and prescriptive rules from session activity |
 | `workflow-optimization` | Identify workflow inefficiencies, collaboration gaps, and operational friction |
@@ -111,7 +111,7 @@ Hindsight runs a five-phase pipeline orchestrated by the main skill:
 The pipeline has four layers. Understanding these matters when writing or debugging lenses:
 
 | Layer | File | Controls | Modifiable by lenses? |
-|-------|------|----------|----------------------|
+| ------- | ------ | ---------- | ---------------------- |
 | 1 | `skills/shared/session-summary-schema.md` | What every summary always contains | No (read-only) |
 | 2 | `skills/shared/extraction-prompt.md` | How subagents read sessions and write summaries | No (read-only) |
 | 3 | Lens `## Extraction Hints` | Extra per-session data for this lens | Yes |
@@ -123,7 +123,7 @@ Lenses control layers 3 and 4. Layers 1 and 2 are upstream — if a lens needs c
 
 The easiest way to create a lens is to use the built-in lens-writing skill:
 
-```
+```text
 /hindsight:lens-writing I want a lens that tracks security-related decisions
 ```
 
