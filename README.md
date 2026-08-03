@@ -22,7 +22,7 @@ Hindsight is a [Claude Code plugin](https://docs.anthropic.com/en/docs/claude-co
 
 It works by:
 
-1. Finding sessions in a date range via [ccvault](https://github.com/2389-research/ccvault) (a session log manager)
+1. Finding sessions in a date range via the configured source (see `skills/shared/sources.md` for supported sources)
 2. Dispatching parallel subagents to extract standardized summaries from each session
 3. Applying a lens's analysis instructions to produce a cross-cutting report
 4. Writing the report to `~/.claude/hindsight/reports/`
@@ -30,7 +30,11 @@ It works by:
 ### Prerequisites
 
 - **Claude Code** with plugin support
-- **ccvault** installed and synced (`brew install 2389-research/tap/ccvault && ccvault sync`)
+- **A session log source** — at least one of:
+  - **ccvault** (`brew install 2389-research/tap/ccvault && ccvault sync`)
+  - **agentsview** (`brew install --cask agentsview && agentsview sync`)
+
+Both are local-first session indexers. Both are multi-agent at the ingestion layer (Claude Code, Codex, and others). Hindsight auto-detects which is installed and uses it; if both are installed, sessions from both are merged (deduped by session ID).
 
 ### Installation
 
@@ -97,11 +101,11 @@ Hindsight runs a five-phase pipeline orchestrated by the main skill:
 
 1. **Phase 0 — Interpret & Validate**: Parse the user's input into a date range and lens. Resolve natural language dates. Match intent to available lenses.
 
-2. **Phase 1 — Collect Sessions**: Query ccvault for sessions in the date range. Supports MCP tools or CLI fallback.
+2. **Phase 1 — Collect Sessions**: Query the available source(s) for sessions in the date range. If both ccvault and agentsview are installed, results are merged and deduplicated by session ID.
 
 3. **Phase 2 — Load Lens**: Read the lens file, extract analysis instructions and any extraction hints that should be passed to subagents.
 
-4. **Phase 3 — Extract Summaries**: Dispatch parallel subagents (batches of 5) to read each session via ccvault and produce a standardized summary following the [session summary schema](skills/shared/session-summary-schema.md). Summaries are cached — re-runs skip already-extracted sessions.
+4. **Phase 3 — Extract Summaries**: Dispatch parallel subagents (batches of 5) to read each session via the source's CLI (see `skills/shared/sources.md`) and produce a standardized summary following the [session summary schema](skills/shared/session-summary-schema.md). Summaries are cached — re-runs skip already-extracted sessions.
 
 5. **Phase 4 — Cross-Cutting Analysis**: Apply the lens's analysis instructions across all summaries to produce the final report.
 
@@ -168,10 +172,10 @@ Changes to the session summary schema or extraction prompt affect every lens. Th
 
 ## Limitations
 
-- **ccvault is a hard dependency.** Hindsight reads session data exclusively through ccvault. If ccvault isn't installed and synced, nothing works.
+- **A session log source is a hard dependency.** Hindsight reads session data exclusively through ccvault or agentsview. If neither is installed and synced, nothing works.
 - **Output quality depends on lens quality.** A vague lens produces a vague report. This is why the contribution bar for default lenses is deliberately high — see [Contributing](#contributing).
 - **Token cost scales with session volume.** Each session gets its own extraction subagent. A month of heavy usage can mean dozens of parallel subagents and meaningful token cost per run. Summaries are cached per date range to avoid re-extraction.
-- **Session data fidelity is bounded by ccvault.** Hindsight can only analyze what ccvault surfaces. Anything ccvault doesn't extract isn't available to lenses.
+- **Session data fidelity is bounded by the configured source.** Hindsight can only analyze what the source surfaces. Anything the source doesn't extract isn't available to lenses.
 - **No multi-session time correlation.** Hindsight does not currently compute time-per-project across sessions. Each summary has its own duration, but cross-session allocation is not solved.
 
 See [`docs/backlog.md`](docs/backlog.md) for known gaps and deferred work.

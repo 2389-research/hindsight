@@ -59,3 +59,38 @@ allocation across sessions remains unsolved (would need multi-session correlatio
 added explicit aggregation compliance rules to Phase 4 of the hindsight skill covering
 date range enforcement, heading hierarchy, content principles, fabrication prevention,
 and project description usage. Needs re-evaluation to confirm improvement.
+
+## SECURITY.md agentsview parity
+
+`SECURITY.md` L22 still describes session log data as read "via [ccvault]..." only.
+Add agentsview alongside ccvault for parity now that hindsight supports both sources.
+Deferred: surfaced during Task 6 (docs polish) of the agentsview source work but out
+of scope for that task — this is a small standalone doc edit.
+
+## CLAUDE.md agentsview parity
+
+`CLAUDE.md` L11 says "always use real session data via ccvault" as a dev convention.
+Could be updated to "via the configured source" (or list both) for parity. Deferred
+because it's a user-editable dev convention file and the wording change isn't
+load-bearing for behavior.
+
+## intent-retro lens compat sweep
+
+Task 7's lens compatibility sweep covered 6 of 7 built-in lenses because
+`intent-retro.md` lives on the un-merged `feature/intent-retro-lens` branch. Once
+that PR merges, re-run the structural sweep against `intent-retro` to confirm no
+source-specific field leaks.
+
+## Behavioral verification of dual-source path
+
+The manual smoke tests in `docs/testing/2026-07-24-agentview-source-smoke.md` are
+the current stand-in for end-to-end behavioral validation of the dual-source path.
+Formal end-to-end validation (running each scenario, ticking the boxes, recording
+findings) is the next step after `feature/agentview-source` merges.
+
+## Task 0 scratch note cleanup
+
+`docs/plans/scratch/2026-07-24-agentview-cli-shape.md` was written as Task 0's
+recon output for the agentsview source work and was never committed. Once
+agentsview support ships and stabilizes, decide whether to delete the file or
+promote it to a permanent working note under `docs/`.
