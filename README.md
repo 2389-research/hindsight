@@ -87,6 +87,7 @@ If no lens is specified, hindsight defaults to `standup`. If input is ambiguous,
 | `content-mining` | Surface blog posts, social media content, and announcements from session activity |
 | `agent-autonomy` | Treat every human message as a system failure. Interrogate each one. Build a plan to eliminate all of them. |
 | `skill-review` | Audit skill usage, diagnose missed triggers, and specify new skill candidates |
+| `intent-retro` | Mine sessions for durable user intent — taste rules, constraints, standing preferences — and draft entries for the intent plugin's `.intent/pending/` triage queue |
 
 Lenses live in `~/.claude/hindsight/lenses/`. You can also scope lenses to a project by placing them in `<project-root>/.claude/hindsight/lenses/` — project lenses take precedence on name collisions.
 

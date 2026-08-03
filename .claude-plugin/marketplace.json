@@ -1,0 +1,11 @@
+{
+  "name": "hindsight-local",
+  "owner": { "name": "2389 Research" },
+  "plugins": [
+    {
+      "name": "hindsight",
+      "source": "./",
+      "description": "Analyze Claude Code sessions through configurable lenses. Past performance is not a guarantee of future results. Unless you measure it."
+    }
+  ]
+}
