@@ -121,7 +121,7 @@ For each source in `AVAILABLE_SOURCES` (from Phase 0):
 2. Run its list-sessions command over the date range from Phase 0
 3. Parse the JSON output
 4. Tag each session row with `source: "<source-name>"`
-5. Filter client-side by the source's timestamp field where the source's CLI doesn't natively support date-range flags (ccvault requires this; agentsview does not since its `--date-from`/`--date-to` handle it natively)
+5. Filter to **active-in-window** semantics — sessions whose `[started_at, ended_at]` interval overlaps the window. See each source's section in `skills/shared/sources.md` for the exact filter expression (ccvault requires a client-side interval-overlap check; agentsview's native `--date-from`/`--date-to` already handle it). Both sources should surface the same in-window set once this is applied, which lets Phase 1's ID-collision dedup (ccvault-preferred) actually fire for sessions that started before the window but were active within it — instead of silently splitting coverage between the sources by filter semantic.
 
 Concatenate all tagged rows. Dedupe by session `id`: if the same ID appears from two sources, keep the ccvault-sourced row and drop the agentsview one. This is a naive tie-break — ccvault is preferred because its extraction assumptions match its field names, and the "both installed with overlapping coverage" case is uncommon.
 

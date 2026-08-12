@@ -19,8 +19,20 @@ one probe in SKILL.md Phase 0.
 
     ccvault list-sessions --json --limit <N> 2>&1
 
-Then filter client-side by `started_at` (JSON field, ISO-8601 string) since
-the CLI does not accept `--after`/`--before` flags. Session rows include:
+`<N>` must be at least the total session count reported by `ccvault stats`
+(or `ccvault orient --json`); the CLI does not paginate, so anything above
+`<N>` in the sorted list is invisible. Pick `<N>` conservatively — session
+volume grows over time, and the CLI returns quickly even at 100k rows.
+
+Then filter client-side by **interval overlap with the window** (active-in-window
+semantics matching agentsview's native `--date-from`/`--date-to`): keep rows
+where `.started_at < <window_end>` AND (`.ended_at` is null OR `.ended_at >=
+<window_start>`). A session that started before the window but was still
+active during it counts as in-window; a session with a null `ended_at` is
+treated as still open. Do NOT filter by `.started_at` alone — that misses
+long-running sessions whose activity falls inside the window.
+
+Session rows include:
 
 - `id` — session UUID (may be prefixed like `nanoclaw:<uuid>` for non-claude-code sources)
 - `project_path`, `project_id`, `started_at`, `ended_at`
