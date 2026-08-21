@@ -8,7 +8,7 @@ following the Session Summary Schema.
 
 ## How to Read the Session
 
-Your assigned source is **{source}**. The CLI contract for this source is:
+Your assigned source tool is **{source_tool}**. The CLI contract for it is:
 
 {SOURCE_CLI_CONTRACT}
 

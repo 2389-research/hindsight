@@ -19,10 +19,16 @@ one probe in SKILL.md Phase 0.
 
     ccvault list-sessions --json --limit <N> 2>&1
 
-`<N>` must be at least the total session count reported by `ccvault stats`
-(or `ccvault orient --json`); the CLI does not paginate, so anything above
-`<N>` in the sorted list is invisible. Pick `<N>` conservatively — session
-volume grows over time, and the CLI returns quickly even at 100k rows.
+Read the archive's total session count first and set `<N>` to at least that
+value. Two ways to get it — `ccvault orient --json` carries it at
+`.database.sessions`, and `ccvault stats` prints it on the `Sessions:` line:
+
+    ccvault orient --json 2>/dev/null    # read .database.sessions
+    ccvault stats 2>/dev/null            # read the "Sessions:" line
+
+The CLI does not paginate, so anything past `<N>` in the sorted list is
+invisible. Pick `<N>` conservatively — session volume grows over time, and
+the CLI returns quickly even at 100k rows.
 
 Then filter client-side by **interval overlap with the window** (active-in-window
 semantics matching agentsview's native `--date-from`/`--date-to`): keep rows
@@ -31,6 +37,18 @@ where `.started_at < <window_end>` AND (`.ended_at` is null OR `.ended_at >=
 active during it counts as in-window; a session with a null `ended_at` is
 treated as still open. Do NOT filter by `.started_at` alone — that misses
 long-running sessions whose activity falls inside the window.
+
+`<window_start>` and `<window_end>` are RFC3339 UTC instants, not the bare
+`YYYY-MM-DD` dates Phase 0 resolves. Because hindsight's range is inclusive
+of its end date, build them as:
+
+- `<window_start>` = start date at `T00:00:00Z`
+- `<window_end>` = the day **after** the end date at `T00:00:00Z` (exclusive)
+
+So `2026-08-05` through `2026-08-11` becomes `2026-08-05T00:00:00Z` and
+`2026-08-12T00:00:00Z`. Substituting a bare date for `<window_end>` breaks
+the `.started_at < <window_end>` comparison and silently drops every
+session that started on the end date.
 
 Session rows include:
 
@@ -44,6 +62,10 @@ The `source` field identifies which ccvault adapter produced the session
 (`claude-code`, `nanoclaw`, `codex`, `hex`, `jeff`, …). Hindsight does not
 filter by this — every session goes through the same extraction pipeline
 and lens output naturally reflects what each session contains.
+
+Note that `source` is the adapter name, not the tool hindsight read the row
+from. Phase 1 tags rows with a separate `source_tool` field (`ccvault` or
+`agentsview`) so the adapter value survives the merge.
 
 **Session metadata (Phase 3 subagent):**
 

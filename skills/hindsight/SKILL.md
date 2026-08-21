@@ -120,16 +120,19 @@ For each source in `AVAILABLE_SOURCES` (from Phase 0):
 1. Look up its `## <source>` section in `skills/shared/sources.md`
 2. Run its list-sessions command over the date range from Phase 0
 3. Parse the JSON output
-4. Tag each session row with `source: "<source-name>"`
+4. Tag each session row with `source_tool: "<source-name>"` — the tool the row
+   was read from (`ccvault` or `agentsview`). Use `source_tool`, not `source`:
+   ccvault rows already carry their own `source` field holding the adapter name
+   (`claude-code`, `nanoclaw`, …), and overwriting it would lose that metadata.
 5. Filter to **active-in-window** semantics — sessions whose `[started_at, ended_at]` interval overlaps the window. See each source's section in `skills/shared/sources.md` for the exact filter expression (ccvault requires a client-side interval-overlap check; agentsview's native `--date-from`/`--date-to` already handle it). Both sources should surface the same in-window set once this is applied, which lets Phase 1's ID-collision dedup (ccvault-preferred) actually fire for sessions that started before the window but were active within it — instead of silently splitting coverage between the sources by filter semantic.
 
-Concatenate all tagged rows. Dedupe by session `id`: if the same ID appears from two sources, keep the ccvault-sourced row and drop the agentsview one. This is a naive tie-break — ccvault is preferred because its extraction assumptions match its field names, and the "both installed with overlapping coverage" case is uncommon.
+Concatenate all tagged rows. Dedupe by session `id`: if the same ID appears from two sources, keep the row whose `source_tool` is `ccvault` and drop the `agentsview` one. This is a naive tie-break — ccvault is preferred because its extraction assumptions match its field names, and the "both installed with overlapping coverage" case is uncommon.
 
 If the final merged list is empty: halt with "No sessions found for the specified date range."
 
 Report to the user: "Found N sessions across M projects for <date-range> (sources: <comma-separated-list>)."
 
-The tagged `source` field on each session row propagates into Phase 3 for source-aware subagent dispatch (see Task 5).
+The tagged `source_tool` field on each session row propagates into Phase 3 for source-aware subagent dispatch (see Task 5).
 
 ### Phase 2: Load Lens
 
@@ -175,7 +178,7 @@ For each session, construct the subagent prompt by combining:
 1. The extraction prompt from `<plugin-root>/skills/shared/extraction-prompt.md` (read it once and reuse)
 2. The session summary schema from `<plugin-root>/skills/shared/session-summary-schema.md` (read it once and reuse)
 3. If the lens has extraction hints, replace `{LENS_EXTRACTION_HINTS}` in the extraction prompt with those hints. If no hints, replace with empty string.
-4. **Source-specific instructions** — for each session, use the `source` field tagged in Phase 1 to look up the matching `## <source>` section of `skills/shared/sources.md`. Inline that section's CLI-contract content in place of `{SOURCE_CLI_CONTRACT}`, and inline the source name (e.g., `ccvault` or `agentsview`) in place of `{source}`. Different sessions in the same run may resolve to different sources.
+4. **Source-specific instructions** — for each session, use the `source_tool` field tagged in Phase 1 to look up the matching `## <source>` section of `skills/shared/sources.md`. Inline that section's CLI-contract content in place of `{SOURCE_CLI_CONTRACT}`, and inline the `source_tool` value (`ccvault` or `agentsview`) in place of `{source_tool}`. Different sessions in the same run may resolve to different sources.
 5. The session ID, project name, and project path from the session list
 6. The date range being analyzed
 7. The output file path where the subagent should write its summary
@@ -205,7 +208,7 @@ turns within the window.
 
 ## Instructions
 
-{contents of extraction-prompt.md, with {source}, {SOURCE_CLI_CONTRACT}, and {LENS_EXTRACTION_HINTS} replaced}
+{contents of extraction-prompt.md, with {source_tool}, {SOURCE_CLI_CONTRACT}, and {LENS_EXTRACTION_HINTS} replaced}
 
 ## Output Schema
 
