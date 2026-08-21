@@ -8,18 +8,24 @@ following the Session Summary Schema.
 
 ## How to Read the Session
 
-Your assigned source is **{source}**. The CLI contract for this source is:
+Your assigned source tool is **{source_tool}**. The CLI contract for it is:
 
 {SOURCE_CLI_CONTRACT}
 
-Follow that contract: probe (already verified by parent) → show metadata → export transcript.
+Follow that contract in order: the probe is already verified by the parent, so
+start at the session-metadata command, then the full-transcript command. Use
+the exact commands and flags your contract lists — the tools do not share verb
+names, so never carry a command over from a contract other than your own.
 
-Read the exported transcript with the Read tool, paginating with offset/limit for long sessions.
+The two steps come back differently depending on the tool. If your transcript
+command writes to an output file, read that file with the Read tool, paginating
+with offset/limit for long sessions. If it returns JSON on stdout, page through
+it with the contract's own pagination flags until you have the whole session.
 
 ## Reading Strategy
 
-1. Get the metadata (from `show`)
-2. Get the full transcript (from `export`)
+1. Get the metadata (from your contract's session-metadata command)
+2. Get the full transcript (from your contract's transcript command), paging until complete
 3. Skim user turns first for the arc, then sample assistant turns at decision points rather than reading every turn
 4. For long sessions (100+ turns): focus on user turns for narrative arc; sample assistant turns at key decisions
 
@@ -32,9 +38,9 @@ Scale the "What Happened" narrative to the session's complexity.
 ## Metadata Extraction Tips
 
 - **Session Slug**: Look for the human-readable session name in system entries or
-  the first user message. If the `show` command output includes a slug field,
+  the first user message. If the session-metadata output includes a slug field,
   use it. Otherwise, leave blank rather than fabricating one.
-- **Duration**: Compute from the start and end timestamps in the `show` command
+- **Duration**: Compute from the start and end timestamps in the session-metadata
   output. Format as HH:MM wall clock time.
 - **Project Description**: Write a one-line description of what this project is,
   inferred from the session content (e.g., "Android email client" or
